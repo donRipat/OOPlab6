@@ -45,17 +45,27 @@ namespace OOPlab6
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Add || e.KeyCode == Keys.Subtract)
-                if (seg != null)
+            if (seg != null)
+            {
+                g.Clear(Color.WhiteSmoke);
+                if (e.KeyCode == Keys.Add || e.KeyCode == Keys.Subtract)
                 {
-                    g.Clear(Color.WhiteSmoke);
                     int s;
                     if (e.KeyCode == Keys.Add)
                         s = 25;
                     else s = -25;
-                    seg.Chng_sz(s);
-                    seg.Draw(g);
+                    seg.Resize(s);
                 }
+                else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+                {
+                    seg.Move(e.KeyCode - Keys.KeyCode, 50);
+                }
+                else if (e.KeyCode == Keys.C)
+                {
+                    seg.Chng_clr(-1);
+                }
+                seg.Draw(g);
+            }
         }
     }
 }
