@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="ACommand.cs" />
     <Compile Include="AShape.cs" />
+    <Compile Include="CCircle.cs" />
+    <Compile Include="CDoublyLinkedList.cs" />
     <Compile Include="CSegment.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

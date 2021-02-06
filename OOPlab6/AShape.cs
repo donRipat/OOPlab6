@@ -10,12 +10,40 @@ namespace OOPlab6
     abstract class AShape
     {
         protected int _color;
-        public abstract void Draw(Graphics g);
-        public abstract void Chng_clr(int clr);
+
+        public void Draw(Graphics g)
+        {
+            Pen p;
+            if (_color == 0)
+                p = new Pen(Color.Green);
+            else if (_color == 1)
+                p = new Pen(Color.Orange);
+            else if (_color == 2)
+                p = new Pen(Color.Blue);
+            else
+                p = new Pen(Color.Purple);
+            p.Width = 3;
+            Draw_shape(g, p);
+        }
+
+        protected abstract void Draw_shape(Graphics g, Pen p);
+
+        public void Chng_clr(int clr)
+        {
+            if (clr < 0)
+                ++_color;
+            else
+                _color = clr;
+            _color %= 4;
+        }
+
         public abstract void Resize(int sz);
+
+        public abstract bool Contains(Point p);
+
         public void Move(int destination, int distance)
         {
-            int d = (int)(distance * 1.414);
+            int d = (int)(distance / 1.414);
             if (destination == 1)
             {
                 Move_all_points(-d, d);

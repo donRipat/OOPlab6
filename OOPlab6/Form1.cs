@@ -26,45 +26,47 @@ namespace OOPlab6
 
         Point a;
         Point b;
-        CSegment seg;
+        AShape s;
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            if (a == default(Point))
-                a = new Point(e.X, e.Y);
-            else
-                b = new Point(e.X, e.Y);
-            if (b != default(Point))
-            {
-                seg = new CSegment(a, b);
-                seg.Draw(g);
-                a = default(Point);
-                b = default(Point);
-            }
+            //if (a == default(Point))
+            //    a = new Point(e.X, e.Y);
+            //else
+            //    b = new Point(e.X, e.Y);
+            //if (b != default(Point))
+            //{
+            //    s = new CSegment(a, b);
+            //    s.Draw(g);
+            //    a = default(Point);
+            //    b = default(Point);
+            //}
+
+            s = new CCircle(e.X, e.Y, 100);
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (seg != null)
+            if (s != null)
             {
                 g.Clear(Color.WhiteSmoke);
                 if (e.KeyCode == Keys.Add || e.KeyCode == Keys.Subtract)
                 {
-                    int s;
+                    int sz;
                     if (e.KeyCode == Keys.Add)
-                        s = 25;
-                    else s = -25;
-                    seg.Resize(s);
+                        sz = 25;
+                    else sz = -25;
+                    s.Resize(sz);
                 }
                 else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
                 {
-                    seg.Move(e.KeyCode - Keys.KeyCode, 50);
+                    s.Move(e.KeyCode - Keys.NumPad0, 50);
                 }
                 else if (e.KeyCode == Keys.C)
                 {
-                    seg.Chng_clr(-1);
+                    s.Chng_clr(-1);
                 }
-                seg.Draw(g);
+                s.Draw(g);
             }
         }
     }

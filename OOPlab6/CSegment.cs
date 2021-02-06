@@ -28,16 +28,7 @@ namespace OOPlab6
                 _angle = Math.Asin(1);
             }
         }
-
-        public override void Chng_clr(int color)
-        {
-            if (color < 0)
-                ++_color;
-            else
-                _color = color;
-            _color %= 4;
-        }
-
+        
         public override void Resize(int size)
         {
             int l = (int)Math.Sqrt((_a.X - _b.X) * (_a.X - _b.X) + 
@@ -65,19 +56,14 @@ namespace OOPlab6
             }
         }
 
-        public override void Draw(Graphics g)
+        protected override void Draw_shape(Graphics g, Pen p)
         {
-            Pen p;
-            if (_color == 0)
-                p = new Pen(Color.Green);
-            else if (_color == 1)
-                p = new Pen(Color.Orange);
-            else if (_color == 2)
-                p = new Pen(Color.Blue);
-            else
-                p = new Pen(Color.Purple);
-            p.Width = 3;
             g.DrawLine(p, _a, _b);
+        }
+
+        public override bool Contains(Point p)
+        {
+            throw new NotImplementedException();
         }
     }
 }
