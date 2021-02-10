@@ -40,29 +40,34 @@ namespace OOPlab6
         
         protected override void Draw_shape(Graphics g, Pen p)
         {
-            g.DrawEllipse(p, X - R / 2, Y - R / 2, R, R);
+            g.DrawEllipse(p, X - R, Y - R, 2 * R, 2 * R);
         }
 
         protected override void Move_all_points(int dx, int dy)
         {
-            if (center.X + dx + R >= 0 && center.X + dx + R <= 1024 &&
-                center.Y + dy + R >= 0 && center.Y + dy + R <= 768)
-            {
-                center = new Point(center.X + dx, center.Y + dy);
-            }
+            center = new Point(center.X + dx, center.Y + dy);
+            if (!Fits())
+                center = new Point(center.X - dx, center.Y - dy);
         }
 
         public override void Resize(int sz)
         {
-            if (r + sz >= 10)
             r += sz;
+            if (!Fits() || r <= 0)
+                r -= sz;
+        }
+
+        protected override bool Fits()
+        {
+            return (center.X - R >= 0 && center.X + R <= w &&
+                center.Y - R >= 0 && center.Y + R <= h);
         }
 
         public override bool Contains(Point p)
         {
             if (p != null)
                 if (Math.Sqrt((p.X - center.X) * (p.X - center.X) +
-                    (p.Y - center.Y) * (p.Y - center.Y)) < r / 2)
+                    (p.Y - center.Y) * (p.Y - center.Y)) < R)
                     return true;
             return false;
         }

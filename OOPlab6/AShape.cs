@@ -11,6 +11,9 @@ namespace OOPlab6
     {
         protected int _color;
 
+        protected static int w = 1006;
+        protected static int h = 721;
+
         public void Draw(Graphics g)
         {
             Pen p;
@@ -77,6 +80,9 @@ namespace OOPlab6
                 Move_all_points(d, -d);
             }
         }
+
         protected abstract void Move_all_points(int dx, int dy);
+
+        protected abstract bool Fits();
     }
 }
