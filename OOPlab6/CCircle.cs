@@ -43,18 +43,26 @@ namespace OOPlab6
             g.DrawEllipse(p, X - R, Y - R, 2 * R, 2 * R);
         }
 
-        protected override void Move_all_points(int dx, int dy)
+        protected override bool Move_all_points(int dx, int dy)
         {
             center = new Point(center.X + dx, center.Y + dy);
             if (!Fits())
+            {
                 center = new Point(center.X - dx, center.Y - dy);
+                return false;
+            }
+            return true;
         }
 
-        public override void Resize(int sz)
+        public override bool Resize(int sz)
         {
             r += sz;
             if (!Fits() || r <= 0)
+            {
                 r -= sz;
+                return false;
+            }
+            return true;
         }
 
         protected override bool Fits()

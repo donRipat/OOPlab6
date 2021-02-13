@@ -28,28 +28,31 @@ namespace OOPlab6
             }
         }
 
-        public override void Resize(int size)
+        public override bool Resize(int size)
         {
             int l = (int)Math.Sqrt((_a.X - _b.X) * (_a.X - _b.X) +
                     (_a.Y - _b.Y) * (_a.Y - _b.Y));
-            if (l + 2 * size <= 0)
-                return;
+            if (l + 2 * size <= 5)
+                return false;
             int r = l / 2 + size;
-            int dx = (int)(r * Math.Cos(_angle));
-            int dy = (int)(r * Math.Sin(_angle));
+            int dx = (int)Math.Round(r * Math.Cos(_angle));
+            int dy = (int)Math.Round(r * Math.Sin(_angle));
             Point a = A;
             Point b = B;
-            Point _m = new Point((_a.X + _b.X) / 2, (_a.Y + _b.Y) / 2);
+            Point _m = new Point((_a.X + _b.X) / 2, 
+                (_a.Y + _b.Y) / 2);
             _a = new Point(_m.X - dx, _m.Y - dy);
             _b = new Point(_m.X + dx, _m.Y + dy);
             if (!Fits())
             {
                 _a = a;
                 _b = b;
+                return false;
             }
+            return true;
         }
 
-        protected override void Move_all_points(int dx, int dy)
+        protected override bool Move_all_points(int dx, int dy)
         {
             _a = new Point(_a.X + dx, _a.Y + dy);
             _b = new Point(_b.X + dx, _b.Y + dy);
@@ -57,7 +60,9 @@ namespace OOPlab6
             {
                 _a = new Point(_a.X - dx, _a.Y - dy);
                 _b = new Point(_b.X - dx, _b.Y - dy);
+                return false;
             }
+            return true;
         }
 
         protected override void Draw_shape(Graphics g, Pen p)
