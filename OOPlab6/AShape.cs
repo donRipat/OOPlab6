@@ -13,6 +13,7 @@ namespace OOPlab6
 
         protected static int w = 1006;
         protected static int h = 721;
+        protected static int m = 24;
 
         public void Draw(Graphics g)
         {
@@ -23,8 +24,12 @@ namespace OOPlab6
                 p = new Pen(Color.Orange);
             else if (_color == 2)
                 p = new Pen(Color.Blue);
-            else
+            else if (_color == 3)
                 p = new Pen(Color.Purple);
+            else if (_color == 4)
+                p = new Pen(Color.Red);
+            else
+                p = new Pen(Color.Black);
             p.Width = 3;
             Draw_shape(g, p);
         }
@@ -34,19 +39,21 @@ namespace OOPlab6
         public void Chng_clr(int clr)
         {
             if (clr < 0)
+            {
                 ++_color;
+                _color %= 4;
+            }
             else
                 _color = clr;
-            _color %= 4;
         }
 
         public abstract bool Resize(int sz);
 
-        public abstract bool Contains(Point p);
+        public abstract bool Contains(PointF p);
 
         public bool Move(int destination, int distance)
         {
-            int d = (int)(distance / 1.414);
+            double d = distance / Math.Sqrt(2);
             if (destination == 1)
             {
                 return Move_all_points(-d, d);
@@ -82,7 +89,7 @@ namespace OOPlab6
             return false;
         }
 
-        protected abstract bool Move_all_points(int dx, int dy);
+        protected abstract bool Move_all_points(double dx, double dy);
 
         protected abstract bool Fits();
     }

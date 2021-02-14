@@ -9,10 +9,10 @@ namespace OOPlab6
 {
     class Polygon : AShape
     {
-        private List<Point> vert = new List<Point>();
-        private Point min;
-        private Point max;
-        CSegment diagonal;
+        private List<PointF> vert = new List<PointF>();
+        private PointF min;
+        private PointF max;
+        private CSegment diagonal;
 
         public Polygon(List<Point> v)
         {
@@ -21,7 +21,7 @@ namespace OOPlab6
 
             min = vert.First();
             max = vert.First();
-            foreach (Point i in vert)
+            foreach (PointF i in vert)
             {
                 if (i.X < min.X)
                     min.X = i.X;
@@ -35,29 +35,33 @@ namespace OOPlab6
             diagonal = new CSegment(min, max);
         }
 
-        protected override bool Move_all_points(int dx, int dy)
+        protected override bool Move_all_points(double dx, double dy)
         {
-            List<Point> oldPoints = new List<Point>();
-            foreach (Point i in vert)
-                oldPoints.Add(new Point(i.X, i.Y));
+            List<PointF> oldPoints = new List<PointF>();
+            foreach (PointF i in vert)
+                oldPoints.Add(new PointF(i.X, i.Y));
             for (int i = 0; i < vert.Count; ++i)
             {
-                Point t = vert.First();
+                PointF t = vert.First();
                 vert.RemoveAt(0);
-                t.X += dx;
-                t.Y += dy;
+                t.X += (float)dx;
+                t.Y += (float)dy;
                 vert.Add(t);
             }
-            min = new Point(min.X + dx, min.Y + dy);
-            max = new Point(max.X + dx, max.Y + dy);
+            min = new PointF((float)(min.X + dx), 
+                (float)(min.Y + dy));
+            max = new PointF((float)(max.X + dx), 
+                (float)(max.Y + dy));
             diagonal = new CSegment(min, max);
             if (!Fits())
             {
                 vert.Clear();
-                foreach (Point i in oldPoints)
+                foreach (PointF i in oldPoints)
                     vert.Add(i);
-                min = new Point(min.X - dx, min.Y - dy);
-                max = new Point(max.X - dx, max.Y - dy);
+                min = new PointF((float)(min.X - dx), 
+                    (float)(min.Y - dy));
+                max = new PointF((float)(max.X - dx), 
+                    (float)(max.Y - dy));
                 diagonal = new CSegment(min, max);
                 return false;
             }
@@ -66,21 +70,21 @@ namespace OOPlab6
 
         protected override void Draw_shape(Graphics g, Pen p)
         {
-            Point prev = vert.First();
-            foreach (Point i in vert)
+            PointF prev = vert.First();
+            foreach (PointF i in vert)
             {
                 g.DrawLine(p, prev, i);
                 prev = i;
             }
-            g.DrawLine(p, diagonal.A, diagonal.B);
+            //g.DrawLine(p, diagonal.A, diagonal.B);
         }
 
         protected override bool Fits()
         {
             return (min.X >= 0 && min.X <= w &&
-                min.Y >= 0 && min.Y <= h &&
+                min.Y >= m && min.Y <= h &&
                 max.X >= 0 && max.X <= w &&
-                max.Y >= 0 && max.Y <= h);
+                max.Y >= m && max.Y <= h);
             //  no need to compare min.X with w etc.
         }
 
@@ -92,29 +96,37 @@ namespace OOPlab6
                 max = diagonal.B;
                 if (max.X < min.X)
                 {
-                    Point t = new Point(min.X, min.Y);
+                    PointF t = new PointF(min.X, min.Y);
                     max = min;
                     min = t;
                 }
-                Point m = new Point((min.X + max.X) / 2, 
+                PointF m = new PointF((min.X + max.X) / 2, 
                     (min.Y + max.Y) / 2);
                 double sx = sz * Math.Cos(diagonal.Angle);
                 double dlen = Math.Sqrt((min.X - max.X) *
                     (min.X - max.X) + (min.Y - max.Y) *
                     (min.Y - max.Y));
-                if (dlen < 100)
+                if (dlen < 50)
                 {
                     diagonal.Resize(-sz);
+                    min = diagonal.A;
+                    max = diagonal.B;
                     return false;
                 }
                 double dx = Math.Cos(diagonal.Angle) * dlen / 2;
                 double ds = 1 + sx / dx;
                 for (int i = 0; i < vert.Count; ++i)
                 {
-                    Point t = vert.First();
+                    PointF t = vert.First();
                     vert.RemoveAt(0);
-                    t.X = (int)Math.Round((t.X - m.X) * ds) + m.X;
-                    t.Y = (int)Math.Round((t.Y - m.Y) * ds) + m.Y;
+                    t.X = (float)((t.X - m.X) * ds + m.X);
+                    t.Y = (float)((t.Y - m.Y) * ds + m.Y);
+                    vert.Add(t);
+                }
+                min = vert.First();
+                max = vert.First();
+                foreach (PointF t in vert)
+                {
                     if (t.X < min.X)
                         min.X = t.X;
                     if (t.Y < min.Y)
@@ -123,7 +135,6 @@ namespace OOPlab6
                         max.X = t.X;
                     if (t.Y > max.Y)
                         max.Y = t.Y;
-                    vert.Add(t);
                 }
                 diagonal = new CSegment(min, max);
                 return true;
@@ -131,7 +142,7 @@ namespace OOPlab6
             return false;
         }
 
-        public override bool Contains(Point p)
+        public override bool Contains(PointF p)
         {
             throw new NotImplementedException();
         }

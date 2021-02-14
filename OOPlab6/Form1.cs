@@ -23,7 +23,7 @@ namespace OOPlab6
         {
             g = CreateGraphics();
         }
-
+        
         Point a;
         Point b;
         AShape s;
@@ -32,16 +32,46 @@ namespace OOPlab6
         CCircle first = null;
         CCircle curverpol = null;
         List<Point> v = new List<Point>();
+        DoublyLinkedList shapes = new DoublyLinkedList();
+        AShape current;
+        int shapeIndex = 0;
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             if (shapeIndex == 0)
             {
-                s = new CCircle(e.X, e.Y, 100);
-                s.Draw(g);
+                PointF p = new PointF(e.X, e.Y);
+                shapes.Set_current_first();
+                for (bool cond = !shapes.Is_empty(); cond;
+                    cond = shapes.Step_forward())
+                    if (shapes.Current.Shape.Contains(p))
+                    {
+                        if (current != null)
+                        {
+                            current.Chng_clr(0);
+                            current.Draw(g);
+                        }
+                        shapes.Current.Shape.Chng_clr(4);
+                        shapes.Current.Shape.Draw(g);
+                        current = shapes.Current.Shape;
+                    }
             }
 
             if (shapeIndex == 1)
+            {
+                s = new CCircle(e.X, e.Y, 100);
+                s.Chng_clr(4);
+                s.Draw(g);
+                shapes.Push_back(s);
+                if (current != null)
+                {
+                    current.Chng_clr(0);
+                    current.Draw(g);
+                }
+                current = s;
+            }
+
+            if (shapeIndex == 2)
             {
                 if (a == default(Point))
                     a = new Point(e.X, e.Y);
@@ -52,11 +82,19 @@ namespace OOPlab6
                     s = new CSegment(a, b);
                     a = default(Point);
                     b = default(Point);
+                    s.Chng_clr(4);
                     s.Draw(g);
+                    shapes.Push_back(s);
+                    if (current != null)
+                    {
+                        current.Chng_clr(0);
+                        current.Draw(g);
+                    }
+                    current = s;
                 }
             }
             
-            if (shapeIndex == 2)
+            if (shapeIndex == 3)
             {
                 Point cur = new Point(e.X, e.Y);
                 curverpol = new CCircle(cur, 5);
@@ -73,7 +111,16 @@ namespace OOPlab6
                     cur = default(Point);
                     first = null;
                     s = new Polygon(v);
+                    Draw_all_shapes();
+                    s.Chng_clr(4);
                     s.Draw(g);
+                    shapes.Push_back(s);
+                    if (current != null)
+                    {
+                        current.Chng_clr(0);
+                        current.Draw(g);
+                    }
+                    current = s;
                     v.Clear();
                 }
                 else
@@ -81,30 +128,39 @@ namespace OOPlab6
             }
         }
 
-        int shapeIndex = 0;
+        private void Draw_all_shapes()
+        {
+            g.Clear(Color.WhiteSmoke);
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond; 
+                cond = shapes.Step_forward())
+                shapes.Current.Shape.Draw(g);
+        }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (s != null)
             {
                 g.Clear(Color.WhiteSmoke);
-                if (e.KeyCode == Keys.Add || e.KeyCode == Keys.Subtract)
+                if (e.KeyCode == Keys.Add || 
+                    e.KeyCode == Keys.Subtract)
                 {
                     int sz;
                     if (e.KeyCode == Keys.Add)
                         sz = res;
                     else sz = -res;
-                    s.Resize(sz);
+                    current.Resize(sz);
                 }
-                else if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+                else if (e.KeyCode >= Keys.NumPad0 && 
+                    e.KeyCode <= Keys.NumPad9)
                 {
-                    s.Move(e.KeyCode - Keys.NumPad0, mov);
+                    current.Move(e.KeyCode - Keys.NumPad0, mov);
                 }
                 else if (e.KeyCode == Keys.C)
                 {
-                    s.Chng_clr(-1);
+                    current.Chng_clr(-1);
                 }
-                s.Draw(g);
+                Draw_all_shapes();
             }
         }
 
@@ -116,19 +172,34 @@ namespace OOPlab6
                 g.VisibleClipBounds.Height.ToString();
         }
 
-        private void circleToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            shapeIndex = 0;
-        }
-
-        private void segmentToolStripMenuItem_Click(object sender, EventArgs e)
+        private void circleToolStripMenuItem_Click(object sender, 
+            EventArgs e)
         {
             shapeIndex = 1;
         }
 
-        private void polygonToolStripMenuItem_Click(object sender, EventArgs e)
+        private void segmentToolStripMenuItem_Click(object sender, 
+            EventArgs e)
         {
             shapeIndex = 2;
+        }
+
+        private void polygonToolStripMenuItem_Click(object sender, 
+            EventArgs e)
+        {
+            shapeIndex = 3;
+        }
+
+        private void selectShapeToolStripMenuItem_Click(object sender, 
+            EventArgs e)
+        {
+            shapeIndex = 0;
+        }
+
+        private void deleteShapeToolStripMenuItem_Click(object sender, 
+            EventArgs e)
+        {
+            shapeIndex = -1;
         }
     }
 }

@@ -43,12 +43,14 @@ namespace OOPlab6
             g.DrawEllipse(p, X - R, Y - R, 2 * R, 2 * R);
         }
 
-        protected override bool Move_all_points(int dx, int dy)
+        protected override bool Move_all_points(double dx, double dy)
         {
-            center = new Point(center.X + dx, center.Y + dy);
+            center = new Point(center.X + (int)Math.Round(dx), 
+                center.Y + (int)Math.Round(dy));
             if (!Fits())
             {
-                center = new Point(center.X - dx, center.Y - dy);
+                center = new Point(center.X - (int)Math.Round(dx),
+                center.Y - (int)Math.Round(dy));
                 return false;
             }
             return true;
@@ -68,10 +70,10 @@ namespace OOPlab6
         protected override bool Fits()
         {
             return (center.X - R >= 0 && center.X + R <= w &&
-                center.Y - R >= 0 && center.Y + R <= h);
+                center.Y - R >= m && center.Y + R <= h);
         }
 
-        public override bool Contains(Point p)
+        public override bool Contains(PointF p)
         {
             if (p != null)
                 if (Math.Sqrt((p.X - center.X) * (p.X - center.X) +

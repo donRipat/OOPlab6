@@ -9,15 +9,15 @@ namespace OOPlab6
 {
     class CSegment : AShape
     {
-        private Point _a, _b;
+        private PointF _a, _b;
         private double _angle;
         
-        public CSegment(Point a, Point b)
+        public CSegment(PointF a, PointF b)
         {
-            _a = new Point(a.X, a.Y);
-            _b = new Point(b.X, b.Y);
-            int dx = _a.X - _b.X;
-            int dy = _a.Y - _b.Y;
+            _a = new PointF(a.X, a.Y);
+            _b = new PointF(b.X, b.Y);
+            double dx = _a.X - _b.X;
+            double dy = _a.Y - _b.Y;
             try
             {
                 _angle = Math.Atan((dy + .0) / dx);
@@ -30,19 +30,19 @@ namespace OOPlab6
 
         public override bool Resize(int size)
         {
-            int l = (int)Math.Sqrt((_a.X - _b.X) * (_a.X - _b.X) +
+            double l = Math.Sqrt((_a.X - _b.X) * (_a.X - _b.X) +
                     (_a.Y - _b.Y) * (_a.Y - _b.Y));
             if (l + 2 * size <= 5)
                 return false;
-            int r = l / 2 + size;
-            int dx = (int)Math.Round(r * Math.Cos(_angle));
-            int dy = (int)Math.Round(r * Math.Sin(_angle));
-            Point a = A;
-            Point b = B;
-            Point _m = new Point((_a.X + _b.X) / 2, 
+            double r = l / 2 + size;
+            double dx = r * Math.Cos(_angle);
+            double dy = r * Math.Sin(_angle);
+            PointF a = A;
+            PointF b = B;
+            PointF _m = new PointF((_a.X + _b.X) / 2, 
                 (_a.Y + _b.Y) / 2);
-            _a = new Point(_m.X - dx, _m.Y - dy);
-            _b = new Point(_m.X + dx, _m.Y + dy);
+            _a = new PointF((float)(_m.X - dx), (float)(_m.Y - dy));
+            _b = new PointF((float)(_m.X + dx), (float)(_m.Y + dy));
             if (!Fits())
             {
                 _a = a;
@@ -52,14 +52,16 @@ namespace OOPlab6
             return true;
         }
 
-        protected override bool Move_all_points(int dx, int dy)
+        protected override bool Move_all_points(double dx, double dy)
         {
-            _a = new Point(_a.X + dx, _a.Y + dy);
-            _b = new Point(_b.X + dx, _b.Y + dy);
+            _a = new PointF((float)(_a.X + dx), (float)(_a.Y + dy));
+            _b = new PointF((float)(_b.X + dx), (float)(_b.Y + dy));
             if (!Fits())
             {
-                _a = new Point(_a.X - dx, _a.Y - dy);
-                _b = new Point(_b.X - dx, _b.Y - dy);
+                _a = new PointF((float)(_a.X - dx), 
+                    (float)(_a.Y - dy));
+                _b = new PointF((float)(_b.X - dx), 
+                    (float)(_b.Y - dy));
                 return false;
             }
             return true;
@@ -70,24 +72,38 @@ namespace OOPlab6
             g.DrawLine(p, _a, _b);
         }
 
-        public override bool Contains(Point p)
+        public override bool Contains(PointF p)
         {
-            int m = (int)(A.Y - Math.Tan(Angle) * A.X);
-            int d = (int)(Math.Abs(-p.X * Math.Tan(Angle) + p.Y - m) /
-                Math.Sqrt(Math.Tan(Angle) * Math.Tan(Angle) + 1));
-            return (d < 10);
+            double m = A.Y - Math.Tan(Angle) * A.X;
+            double delta = 25;
+            double d = Math.Abs(-p.X * Math.Tan(Angle) + p.Y - m) /
+                Math.Sqrt(Math.Tan(Angle) * Math.Tan(Angle) + 1);
+            return (d < delta && Belongs(p, delta));
+        }
+
+        private bool Belongs(PointF p, double d)
+        {
+            return (p.X <= A.X + d && p.X + d >= B.X - d || 
+                p.X >= A.X - d && p.X <= B.X + d)
+                && (p.Y <= A.Y + d&& p.Y >= B.Y - d|| 
+                p.Y >= A.Y - d && p.Y <= B.Y + d);
         }
 
         protected override bool Fits()
         {
             return (_a.X >= 0 && _a.X <= w &&
-                _a.Y >= 0 && _a.Y <= h &&
+                _a.Y >= m && _a.Y <= h &&
                 _b.X >= 0 && _b.X <= w &&
-                _b.Y >= 0 && _b.Y <= h);
+                _b.Y >= m && _b.Y <= h);
         }
 
-        public Point A { get => _a; }
-        public Point B { get => _b; }
+        public bool Intersects(CSegment a)
+        {
+            throw new NotImplementedException();
+        }
+
+        public PointF A { get => _a; }
+        public PointF B { get => _b; }
         public double Angle { get => _angle; }
     }
 }
