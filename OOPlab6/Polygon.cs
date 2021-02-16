@@ -14,9 +14,9 @@ namespace OOPlab6
         private PointF max;
         private CSegment diagonal;
 
-        public Polygon(List<Point> v)
+        public Polygon(List<PointF> v)
         {
-            foreach (Point i in v)
+            foreach (PointF i in v)
                 vert.Add(i);
 
             min = vert.First();
@@ -144,7 +144,19 @@ namespace OOPlab6
 
         public override bool Contains(PointF p)
         {
-            throw new NotImplementedException();
+            PointF end = new PointF(p.X + 99999, p.Y);
+            CSegment ray = new CSegment(p, end);
+            PointF prev = vert.Last();
+            int count = 0;
+            foreach (PointF i in vert)
+            {
+                CSegment c = new CSegment(prev, i);
+                PointF isctn = ray.Intersects(c);
+                if (c.Contains(isctn) && ray.Contains(isctn))
+                    ++count;
+                prev = i;
+            }
+            return (count % 2 == 1);
         }
     }
 }

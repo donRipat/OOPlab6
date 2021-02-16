@@ -24,16 +24,15 @@ namespace OOPlab6
             g = CreateGraphics();
         }
         
-        Point a;
-        Point b;
+        PointF a;
+        PointF b;
         AShape s;
         const int res = 25;
         const int mov = 50;
         CCircle first = null;
         CCircle curverpol = null;
-        List<Point> v = new List<Point>();
+        List<PointF> v = new List<PointF>();
         DoublyLinkedList shapes = new DoublyLinkedList();
-        AShape current;
         int shapeIndex = 0;
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -46,57 +45,68 @@ namespace OOPlab6
                     cond = shapes.Step_forward())
                     if (shapes.Current.Shape.Contains(p))
                     {
-                        if (current != null)
+                        if (s != null)
                         {
-                            current.Chng_clr(0);
-                            current.Draw(g);
+                            s.Chng_clr(0);
+                            s.Draw(g);
                         }
-                        shapes.Current.Shape.Chng_clr(4);
-                        shapes.Current.Shape.Draw(g);
-                        current = shapes.Current.Shape;
+                        s = shapes.Current.Shape;
+                        s.Chng_clr(4);
+                        s.Draw(g);
                     }
+
+                //for (int x = 0; x < 1100; x += 5)
+                //    for (int y = 0; y < 800; y += 5)
+                //    {
+                //        PointF p = new PointF(x, y);
+                //        for (bool cond = !shapes.Is_empty(); cond;
+                //            cond = shapes.Step_forward())
+                //            if (shapes.Current.Shape.Contains(p))
+                //            {
+                //                CCircle omg = new CCircle(p, 2);
+                //                omg.Draw(g);
+                //            }
+                //    }
             }
 
             if (shapeIndex == 1)
             {
+                if (s != null)
+                {
+                    s.Chng_clr(0);
+                    s.Draw(g);
+                }
                 s = new CCircle(e.X, e.Y, 100);
                 s.Chng_clr(4);
                 s.Draw(g);
                 shapes.Push_back(s);
-                if (current != null)
-                {
-                    current.Chng_clr(0);
-                    current.Draw(g);
-                }
-                current = s;
             }
 
             if (shapeIndex == 2)
             {
-                if (a == default(Point))
-                    a = new Point(e.X, e.Y);
+                if (a == default(PointF))
+                    a = new PointF(e.X, e.Y);
                 else
-                    b = new Point(e.X, e.Y);
-                if (b != default(Point))
+                    b = new PointF(e.X, e.Y);
+                if (b != default(PointF))
                 {
+                    if (s != null)
+                    {
+                        s.Chng_clr(0);
+                        s.Draw(g);
+                    }
                     s = new CSegment(a, b);
-                    a = default(Point);
-                    b = default(Point);
+                    a = default(PointF);
+                    b = default(PointF);
                     s.Chng_clr(4);
                     s.Draw(g);
                     shapes.Push_back(s);
-                    if (current != null)
-                    {
-                        current.Chng_clr(0);
-                        current.Draw(g);
-                    }
-                    current = s;
                 }
             }
             
             if (shapeIndex == 3)
             {
-                Point cur = new Point(e.X, e.Y);
+                PointF cur = new PointF(e.X, e.Y);
                 curverpol = new CCircle(cur, 5);
                 curverpol.Draw(g);
                 if (first == null)
@@ -107,20 +117,19 @@ namespace OOPlab6
                 }
                 if (first.Contains(cur) && cur != first.Center)
                 {
+                    if (s != null)
+                    {
+                        s.Chng_clr(0);
+                        s.Draw(g);
+                    }
                     v.Add(first.Center);
-                    cur = default(Point);
+                    cur = default(PointF);
                     first = null;
                     s = new Polygon(v);
                     Draw_all_shapes();
                     s.Chng_clr(4);
                     s.Draw(g);
                     shapes.Push_back(s);
-                    if (current != null)
-                    {
-                        current.Chng_clr(0);
-                        current.Draw(g);
-                    }
-                    current = s;
                     v.Clear();
                 }
                 else
@@ -149,16 +158,16 @@ namespace OOPlab6
                     if (e.KeyCode == Keys.Add)
                         sz = res;
                     else sz = -res;
-                    current.Resize(sz);
+                    s.Resize(sz);
                 }
                 else if (e.KeyCode >= Keys.NumPad0 && 
                     e.KeyCode <= Keys.NumPad9)
                 {
-                    current.Move(e.KeyCode - Keys.NumPad0, mov);
+                    s.Move(e.KeyCode - Keys.NumPad0, mov);
                 }
                 else if (e.KeyCode == Keys.C)
                 {
-                    current.Chng_clr(-1);
+                    s.Chng_clr(-1);
                 }
                 Draw_all_shapes();
             }
@@ -167,9 +176,7 @@ namespace OOPlab6
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
             label1.Text = "X = " + e.X.ToString() + " ; " + "Y = " +
-                e.Y.ToString() + " ;     W = " +
-                g.VisibleClipBounds.Width.ToString() + " ; H = " +
-                g.VisibleClipBounds.Height.ToString();
+                e.Y.ToString();
         }
 
         private void circleToolStripMenuItem_Click(object sender, 

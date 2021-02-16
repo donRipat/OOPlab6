@@ -9,48 +9,49 @@ namespace OOPlab6
 {
     class CCircle : AShape
     {
-        Point center;
+        PointF center;
         private int r;
 
         public CCircle()
         {
-            center = new Point();
+            center = new PointF();
             r = 0;
         }
         public CCircle(int x, int y, int r)
         {
-            center = new Point(x, y);
+            center = new PointF(x, y);
             this.r = r;
         }
-        public CCircle(Point p, int r)
+        public CCircle(PointF p, int r)
         {
-            center = new Point(p.X, p.Y);
+            center = new PointF(p.X, p.Y);
             this.r = r;
         }
         public CCircle(CCircle c)
         {
-            center = new Point(c.X, c.Y);
+            center = new PointF((float)c.X, (float)c.Y);
             r = c.R;
         }
 
         public int R { get => r; }
-        public int X { get => center.X; }
-        public int Y { get => center.Y; }
-        public Point Center { get => center; }
+        public double X { get => center.X; }
+        public double Y { get => center.Y; }
+        public PointF Center { get => center; }
         
         protected override void Draw_shape(Graphics g, Pen p)
         {
-            g.DrawEllipse(p, X - R, Y - R, 2 * R, 2 * R);
+            g.DrawEllipse(p, (float)(X - R), (float)(Y - R), 2 * R, 
+                2 * R);
         }
 
         protected override bool Move_all_points(double dx, double dy)
         {
-            center = new Point(center.X + (int)Math.Round(dx), 
-                center.Y + (int)Math.Round(dy));
+            center = new PointF((float)(center.X + dx), 
+                (float)(center.Y + dy));
             if (!Fits())
             {
-                center = new Point(center.X - (int)Math.Round(dx),
-                center.Y - (int)Math.Round(dy));
+                center = new PointF((float)(center.X - dx),
+                (float)(center.Y - dy));
                 return false;
             }
             return true;

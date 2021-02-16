@@ -75,7 +75,7 @@ namespace OOPlab6
         public override bool Contains(PointF p)
         {
             double m = A.Y - Math.Tan(Angle) * A.X;
-            double delta = 25;
+            double delta = 5;
             double d = Math.Abs(-p.X * Math.Tan(Angle) + p.Y - m) /
                 Math.Sqrt(Math.Tan(Angle) * Math.Tan(Angle) + 1);
             return (d < delta && Belongs(p, delta));
@@ -85,7 +85,7 @@ namespace OOPlab6
         {
             return (p.X <= A.X + d && p.X + d >= B.X - d || 
                 p.X >= A.X - d && p.X <= B.X + d)
-                && (p.Y <= A.Y + d&& p.Y >= B.Y - d|| 
+                && (p.Y <= A.Y + d && p.Y >= B.Y - d || 
                 p.Y >= A.Y - d && p.Y <= B.Y + d);
         }
 
@@ -97,9 +97,24 @@ namespace OOPlab6
                 _b.Y >= m && _b.Y <= h);
         }
 
-        public bool Intersects(CSegment a)
+        public PointF Intersects(CSegment a)
         {
-            throw new NotImplementedException();
+            double k1 = Math.Tan(a.Angle);
+            double k2 = Math.Tan(this.Angle);
+            double m1 = a.A.Y - k1 * a.A.X;
+            double m2 = this.A.Y - k2 * this.A.X;
+            PointF ans = new PointF(-1, -1);
+            try
+            {
+                ans.X = (float)((m2 - m1) / (k1 - k2));
+                ans.Y = (float)(k2 * ans.X + m2);
+            }
+            catch (DivideByZeroException)
+            {
+                ans.X = 99999;
+                ans.Y = 99999;
+            }
+            return ans;
         }
 
         public PointF A { get => _a; }

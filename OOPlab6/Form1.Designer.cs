@@ -34,8 +34,8 @@
             this.circleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.segmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.polygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteShapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectShapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteShapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -96,6 +96,13 @@
     "olygon click on the first vertex.";
             this.polygonToolStripMenuItem.Click += new System.EventHandler(this.polygonToolStripMenuItem_Click);
             // 
+            // selectShapeToolStripMenuItem
+            // 
+            this.selectShapeToolStripMenuItem.Name = "selectShapeToolStripMenuItem";
+            this.selectShapeToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
+            this.selectShapeToolStripMenuItem.Text = "Select shape";
+            this.selectShapeToolStripMenuItem.Click += new System.EventHandler(this.selectShapeToolStripMenuItem_Click);
+            // 
             // deleteShapeToolStripMenuItem
             // 
             this.deleteShapeToolStripMenuItem.Name = "deleteShapeToolStripMenuItem";
@@ -103,13 +110,6 @@
             this.deleteShapeToolStripMenuItem.Text = "Delete shape";
             this.deleteShapeToolStripMenuItem.ToolTipText = "Highlight shapes with RMB and click here to delete them.";
             this.deleteShapeToolStripMenuItem.Click += new System.EventHandler(this.deleteShapeToolStripMenuItem_Click);
-            // 
-            // selectShapeToolStripMenuItem
-            // 
-            this.selectShapeToolStripMenuItem.Name = "selectShapeToolStripMenuItem";
-            this.selectShapeToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
-            this.selectShapeToolStripMenuItem.Text = "Select shape";
-            this.selectShapeToolStripMenuItem.Click += new System.EventHandler(this.selectShapeToolStripMenuItem_Click);
             // 
             // Form1
             // 
