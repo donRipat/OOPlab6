@@ -83,7 +83,7 @@ namespace OOPlab6
 
         private bool Belongs(PointF p, double d)
         {
-            return (p.X <= A.X + d && p.X + d >= B.X - d || 
+            return (p.X <= A.X + d && p.X >= B.X - d || 
                 p.X >= A.X - d && p.X <= B.X + d)
                 && (p.Y <= A.Y + d && p.Y >= B.Y - d || 
                 p.Y >= A.Y - d && p.Y <= B.Y + d);

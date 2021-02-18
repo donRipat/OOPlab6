@@ -30,7 +30,7 @@ namespace OOPlab6
         const int res = 25;
         const int mov = 50;
         CCircle first = null;
-        CCircle curverpol = null;
+        CCircle curver = null;
         List<PointF> v = new List<PointF>();
         DoublyLinkedList shapes = new DoublyLinkedList();
         int shapeIndex = 0;
@@ -55,15 +55,15 @@ namespace OOPlab6
                         s.Draw(g);
                     }
 
-                //for (int x = 0; x < 1100; x += 5)
-                //    for (int y = 0; y < 800; y += 5)
+                //for (int x = 0; x < 1100; x += 1)
+                //    for (int y = 0; y < 800; y += 1)
                 //    {
                 //        PointF p = new PointF(x, y);
                 //        for (bool cond = !shapes.Is_empty(); cond;
                 //            cond = shapes.Step_forward())
                 //            if (shapes.Current.Shape.Contains(p))
                 //            {
-                //                CCircle omg = new CCircle(p, 2);
+                //                CCircle omg = new CCircle(p, 1);
                 //                omg.Draw(g);
                 //            }
                 //    }
@@ -107,8 +107,8 @@ namespace OOPlab6
             if (shapeIndex == 3)
             {
                 PointF cur = new PointF(e.X, e.Y);
-                curverpol = new CCircle(cur, 5);
-                curverpol.Draw(g);
+                curver = new CCircle(cur, 5);
+                curver.Draw(g);
                 if (first == null)
                 {
                     first = new CCircle(cur, 5);
@@ -206,7 +206,17 @@ namespace OOPlab6
         private void deleteShapeToolStripMenuItem_Click(object sender, 
             EventArgs e)
         {
-            shapeIndex = -1;
+            if (shapes.Count > 0)
+            {
+                shapes.Search(s);
+                shapes.Delete_current();
+                if (shapes.Tail != null)
+                {
+                    s = shapes.Tail.Shape;
+                    s.Chng_clr(4);
+                }
+                Draw_all_shapes();
+            }
         }
     }
 }
