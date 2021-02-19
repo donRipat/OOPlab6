@@ -35,7 +35,7 @@ namespace OOPlab6
             diagonal = new CSegment(min, max);
         }
 
-        protected override bool Move_all_points(double dx, double dy)
+        public override bool Move_all_points(double dx, double dy)
         {
             List<PointF> oldPoints = new List<PointF>();
             foreach (PointF i in vert)
@@ -68,7 +68,7 @@ namespace OOPlab6
             return true;
         }
 
-        protected override void Draw_shape(Graphics g, Pen p)
+        public override void Draw_shape(Graphics g, Pen p)
         {
             PointF prev = vert.First();
             foreach (PointF i in vert)
@@ -79,7 +79,7 @@ namespace OOPlab6
             //g.DrawLine(p, diagonal.A, diagonal.B);
         }
 
-        protected override bool Fits()
+        public override bool Fits()
         {
             return (min.X >= 0 && min.X <= w &&
                 min.Y >= m && min.Y <= h &&

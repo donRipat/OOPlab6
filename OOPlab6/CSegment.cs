@@ -52,7 +52,7 @@ namespace OOPlab6
             return true;
         }
 
-        protected override bool Move_all_points(double dx, double dy)
+        public override bool Move_all_points(double dx, double dy)
         {
             _a = new PointF((float)(_a.X + dx), (float)(_a.Y + dy));
             _b = new PointF((float)(_b.X + dx), (float)(_b.Y + dy));
@@ -67,7 +67,7 @@ namespace OOPlab6
             return true;
         }
 
-        protected override void Draw_shape(Graphics g, Pen p)
+        public override void Draw_shape(Graphics g, Pen p)
         {
             g.DrawLine(p, _a, _b);
         }
@@ -89,7 +89,7 @@ namespace OOPlab6
                 p.Y >= A.Y - d && p.Y <= B.Y + d);
         }
 
-        protected override bool Fits()
+        public override bool Fits()
         {
             return (_a.X >= 0 && _a.X <= w &&
                 _a.Y >= m && _a.Y <= h &&

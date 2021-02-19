@@ -38,13 +38,13 @@ namespace OOPlab6
         public double Y { get => center.Y; }
         public PointF Center { get => center; }
         
-        protected override void Draw_shape(Graphics g, Pen p)
+        public override void Draw_shape(Graphics g, Pen p)
         {
             g.DrawEllipse(p, (float)(X - R), (float)(Y - R), 2 * R, 
                 2 * R);
         }
 
-        protected override bool Move_all_points(double dx, double dy)
+        public override bool Move_all_points(double dx, double dy)
         {
             center = new PointF((float)(center.X + dx), 
                 (float)(center.Y + dy));
@@ -68,7 +68,7 @@ namespace OOPlab6
             return true;
         }
 
-        protected override bool Fits()
+        public override bool Fits()
         {
             return (center.X - R >= 0 && center.X + R <= w &&
                 center.Y - R >= m && center.Y + R <= h);
