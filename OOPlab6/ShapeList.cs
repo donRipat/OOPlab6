@@ -1,37 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace OOPlab6
 {
-    class DoublyNode
-    {
-        private AShape shape;
-        public DoublyNode prev;
-        public DoublyNode next;
-
-        //  constructor
-        public DoublyNode(AShape shape)
-        {
-            this.shape = shape;
-            prev = null;
-            next = null;
-        }
-
-        public AShape Shape { get => shape; }
-    }
-
-    class DoublyLinkedList
+    class ShapeList
     {
         private int count;
         private DoublyNode head;
         private DoublyNode current;
         private DoublyNode tail;
 
-        //  construsctor
-        public DoublyLinkedList()
+        public ShapeList()
         {
             head = null;
             tail = null;
@@ -226,5 +205,50 @@ namespace OOPlab6
         public DoublyNode Head { get => head; }
         public DoublyNode Tail { get => tail; }
         public int Count { get => count; }
+
+        public virtual AShape CreateShape(string code)
+        {
+            return null;
+        }
+
+        public bool LoadShapes(StreamReader sr)
+        {
+            try
+            {
+                int count = int.Parse(sr.ReadLine());
+                for (int i = 0; i < count; ++i)
+                {
+                    string code = sr.ReadLine();
+                    AShape s = CreateShape(code);
+                    s.Load(sr);
+                    if (s == null)
+                        return false;
+                    Push_back(s);
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool SaveShapes(StreamWriter sw)
+        {
+            try
+            {
+                sw.WriteLine(Count);
+                Set_current_first();
+                for (bool cond = !Is_empty(); cond;
+                    cond = Step_forward())
+                    if (!Current.Shape.Save(sw))
+                        return false;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

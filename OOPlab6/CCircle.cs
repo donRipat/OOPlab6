@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
 
 namespace OOPlab6
 {
     class CCircle : AShape
     {
-        PointF center;
+        private PointF center;
         private int r;
 
         public CCircle()
         {
             center = new PointF();
-            r = 0;
         }
         public CCircle(int x, int y, int r)
         {
@@ -31,6 +28,15 @@ namespace OOPlab6
         {
             center = new PointF((float)c.X, (float)c.Y);
             r = c.R;
+            _color = c.color;
+        }
+        public CCircle(int x, int y, int r, int c) : this(x, y, r)
+        {
+            _color = c;
+        }
+        public CCircle(PointF p, int r, int c) : this(p, r)
+        {
+            _color = c;
         }
 
         public int R { get => r; }
@@ -81,6 +87,47 @@ namespace OOPlab6
                     (p.Y - center.Y) * (p.Y - center.Y)) < R)
                     return true;
             return false;
+        }
+
+        public override DoublyLinkedList Ungroup()
+        {
+            return null;
+        }
+
+        public override AShape Clone()
+        {
+            return new CCircle(this);
+        }
+
+        public override bool Save(StreamWriter sw)
+        {
+            try
+            {
+                sw.WriteLine("C");
+                sw.WriteLine(color + " " + X + " " + Y + " " + R);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public override bool Load(StreamReader sr)
+        {
+            try
+            {
+                string[] s = sr.ReadLine().Split(' ');
+                _color = int.Parse(s[0]);
+                center.X = (float)Convert.ToDouble(s[1]);
+                center.Y = (float)Convert.ToDouble(s[2]);
+                r = int.Parse(s[3]);
+                return true;
+            }
+            catch(Exception)
+            {
+                return false;
+            }
         }
     }
 }

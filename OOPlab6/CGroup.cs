@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace OOPlab6
 {
@@ -14,6 +11,15 @@ namespace OOPlab6
         public CGroup()
         {
             shapes = new DoublyLinkedList();
+        }
+
+        public CGroup(CGroup gr)
+        {
+            shapes = new DoublyLinkedList();
+            gr.shapes.Set_current_first();
+            for (bool cond = !gr.shapes.Is_empty(); cond;
+                cond = gr.shapes.Step_forward())
+                shapes.Push_back(gr.shapes.Current.Shape.Clone());
         }
 
         public void Add(AShape s)
@@ -39,13 +45,35 @@ namespace OOPlab6
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
-                oldShapes.Push_back(shapes.Current.Shape);
+                oldShapes.Push_back(shapes.Current.Shape.Clone());
 
             bool res = true;
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
                 if (!shapes.Current.Shape.Resize(sz))
+                {
+                    res = false;
+                    break;
+                }
+            if (!res)
+                shapes = oldShapes;
+            return res;
+        }
+
+        public override bool Move_all_points(double dx, double dy)
+        {
+            DoublyLinkedList oldShapes = new DoublyLinkedList();
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond;
+                    cond = shapes.Step_forward())
+                oldShapes.Push_back(shapes.Current.Shape.Clone());
+
+            bool res = true;
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond;
+                    cond = shapes.Step_forward())
+                if (!shapes.Current.Shape.Move_all_points(dx, dy))
                 {
                     res = false;
                     break;
@@ -72,27 +100,44 @@ namespace OOPlab6
                     cond = shapes.Step_forward())
                 shapes.Current.Shape.Draw_shape(g, p);
         }
-
-        public override bool Move_all_points(double dx, double dy)
+        
+        public override DoublyLinkedList Ungroup()
         {
-            DoublyLinkedList oldShapes = new DoublyLinkedList();
-            shapes.Set_current_first();
-            for (bool cond = !shapes.Is_empty(); cond;
-                    cond = shapes.Step_forward())
-                oldShapes.Push_back(shapes.Current.Shape);
+            return shapes;
+        }
 
-            bool res = true;
-            shapes.Set_current_first();
-            for (bool cond = !shapes.Is_empty(); cond;
-                    cond = shapes.Step_forward())
-                if (!shapes.Current.Shape.Move_all_points(dx, dy))
-                {
-                    res = false;
-                    break;
-                }
-            if (!res)
-                shapes = oldShapes;
-            return res;
+        public override AShape Clone()
+        {
+            return new CGroup(this);
+        }
+
+        public override bool Save(StreamWriter sw)
+        {
+            try
+            {
+                sw.WriteLine("G");
+                if (!shapes.SaveShapes(sw))
+                    return false;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public override bool Load(StreamReader sr)
+        {
+            try
+            {
+                if (!shapes.LoadShapes(sr))
+                    return false;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

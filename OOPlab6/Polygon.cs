@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
 
 namespace OOPlab6
 {
@@ -14,6 +13,13 @@ namespace OOPlab6
         private PointF max;
         private CSegment diagonal;
 
+        public Polygon()
+        {
+            vert = new List<PointF>();
+            min = new PointF();
+            max = new PointF();
+            diagonal = new CSegment(min, max);
+        }
         public Polygon(List<PointF> v)
         {
             foreach (PointF i in v)
@@ -34,6 +40,14 @@ namespace OOPlab6
             }
             diagonal = new CSegment(min, max);
         }
+        public Polygon(Polygon pol)
+        {
+            vert = pol.vert;
+            min = pol.min;
+            max = pol.max;
+            diagonal = pol.diagonal;
+            _color = pol.color;
+        }
 
         public override bool Move_all_points(double dx, double dy)
         {
@@ -48,9 +62,9 @@ namespace OOPlab6
                 t.Y += (float)dy;
                 vert.Add(t);
             }
-            min = new PointF((float)(min.X + dx), 
+            min = new PointF((float)(min.X + dx),
                 (float)(min.Y + dy));
-            max = new PointF((float)(max.X + dx), 
+            max = new PointF((float)(max.X + dx),
                 (float)(max.Y + dy));
             diagonal = new CSegment(min, max);
             if (!Fits())
@@ -58,9 +72,9 @@ namespace OOPlab6
                 vert.Clear();
                 foreach (PointF i in oldPoints)
                     vert.Add(i);
-                min = new PointF((float)(min.X - dx), 
+                min = new PointF((float)(min.X - dx),
                     (float)(min.Y - dy));
-                max = new PointF((float)(max.X - dx), 
+                max = new PointF((float)(max.X - dx),
                     (float)(max.Y - dy));
                 diagonal = new CSegment(min, max);
                 return false;
@@ -70,7 +84,9 @@ namespace OOPlab6
 
         public override void Draw_shape(Graphics g, Pen p)
         {
-            PointF prev = vert.First();
+            if (vert.Count == 0)
+                return;
+            PointF prev = vert.Last();
             foreach (PointF i in vert)
             {
                 g.DrawLine(p, prev, i);
@@ -100,7 +116,7 @@ namespace OOPlab6
                     max = min;
                     min = t;
                 }
-                PointF m = new PointF((min.X + max.X) / 2, 
+                PointF m = new PointF((min.X + max.X) / 2,
                     (min.Y + max.Y) / 2);
                 double sx = sz * Math.Cos(diagonal.Angle);
                 double dlen = Math.Sqrt((min.X - max.X) *
@@ -123,20 +139,7 @@ namespace OOPlab6
                     t.Y = (float)((t.Y - m.Y) * ds + m.Y);
                     vert.Add(t);
                 }
-                min = vert.First();
-                max = vert.First();
-                foreach (PointF t in vert)
-                {
-                    if (t.X < min.X)
-                        min.X = t.X;
-                    if (t.Y < min.Y)
-                        min.Y = t.Y;
-                    if (t.X > max.X)
-                        max.X = t.X;
-                    if (t.Y > max.Y)
-                        max.Y = t.Y;
-                }
-                diagonal = new CSegment(min, max);
+                UpdateDiagonal();
                 return true;
             }
             return false;
@@ -157,6 +160,74 @@ namespace OOPlab6
                 prev = i;
             }
             return (count % 2 == 1);
+        }
+
+        protected void UpdateDiagonal()
+        {
+            min = vert.First();
+            max = vert.First();
+            foreach (PointF t in vert)
+            {
+                if (t.X < min.X)
+                    min.X = t.X;
+                if (t.Y < min.Y)
+                    min.Y = t.Y;
+                if (t.X > max.X)
+                    max.X = t.X;
+                if (t.Y > max.Y)
+                    max.Y = t.Y;
+            }
+            diagonal = new CSegment(min, max);
+        }
+
+        public override DoublyLinkedList Ungroup()
+        {
+            return null;
+        }
+
+        public override AShape Clone()
+        {
+            return new Polygon(this);
+        }
+
+        public override bool Save(StreamWriter sw)
+        {
+            try
+            {
+                sw.WriteLine("P");
+                sw.WriteLine(vert.Count);
+                sw.Write(color);
+                foreach (PointF i in vert)
+                    sw.Write(" " + i.X + " " + i.Y);
+                sw.WriteLine();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public override bool Load(StreamReader sr)
+        {
+            try
+            {
+                int count = int.Parse(sr.ReadLine());
+                string[] s = sr.ReadLine().Split(' ');
+                _color = int.Parse(s[0]);
+                for (int i = 1; i <= count; ++i)
+                {
+                    float x = (float)Convert.ToDouble(s[2 * i - 1]);
+                    float y = (float)Convert.ToDouble(s[2 * i]);
+                    vert.Add(new PointF(x, y));
+                }
+                UpdateDiagonal();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
 
 namespace OOPlab6
 {
@@ -21,12 +18,31 @@ namespace OOPlab6
             if (_color == 0)
                 p = new Pen(Color.Green);
             else if (_color == 1)
-                p = new Pen(Color.Orange);
+                p = new Pen(Color.Purple);
             else if (_color == 2)
                 p = new Pen(Color.Blue);
             else if (_color == 3)
-                p = new Pen(Color.Purple);
+                p = new Pen(Color.Orange);
             else if (_color == 4)
+                p = new Pen(Color.Red);
+            else
+                p = new Pen(Color.Black);
+            p.Width = width;
+            Draw_shape(g, p);
+        }
+
+        public void Draw(Graphics g, int width, int color)
+        {
+            Pen p;
+            if (color == 0)
+                p = new Pen(Color.Green);
+            else if (color == 1)
+                p = new Pen(Color.Purple);
+            else if (color == 2)
+                p = new Pen(Color.Blue);
+            else if (color == 3)
+                p = new Pen(Color.Orange);
+            else if (color == 4)
                 p = new Pen(Color.Red);
             else
                 p = new Pen(Color.Black);
@@ -94,5 +110,13 @@ namespace OOPlab6
         public abstract bool Fits();
 
         public int color { get => _color; }
+
+        public abstract DoublyLinkedList Ungroup();
+
+        public abstract AShape Clone();
+
+        public abstract bool Save(StreamWriter sw);
+
+        public abstract bool Load(StreamReader sr);
     }
 }

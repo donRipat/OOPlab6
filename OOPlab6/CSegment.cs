@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
 
 namespace OOPlab6
 {
@@ -12,6 +10,12 @@ namespace OOPlab6
         private PointF _a, _b;
         private double _angle;
         
+        public CSegment()
+        {
+            _a = new PointF();
+            _b = new PointF();
+            _angle = 0;
+        }
         public CSegment(PointF a, PointF b)
         {
             _a = new PointF(a.X, a.Y);
@@ -26,6 +30,17 @@ namespace OOPlab6
             {
                 _angle = Math.Asin(1);
             }
+        }
+        public CSegment(CSegment seg)
+        {
+            _a = seg._a;
+            _b = seg._b;
+            _angle = seg._angle;
+            _color = seg.color;
+        }
+        public CSegment(PointF a, PointF b, int c) : this(a, b)
+        {
+            _color = c;
         }
 
         public override bool Resize(int size)
@@ -120,5 +135,48 @@ namespace OOPlab6
         public PointF A { get => _a; }
         public PointF B { get => _b; }
         public double Angle { get => _angle; }
+
+        public override DoublyLinkedList Ungroup()
+        {
+            return null;
+        }
+
+        public override AShape Clone()
+        {
+            return new CSegment(this);
+        }
+
+        public override bool Save(StreamWriter sw)
+        {
+            try
+            {
+                sw.WriteLine("S");
+                sw.WriteLine(color + " " + A.X + " " + A.Y + " " + 
+                    B.X + " " + B.Y);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public override bool Load(StreamReader sr)
+        {
+            try
+            {
+                string[] s = sr.ReadLine().Split(' ');
+                _color = int.Parse(s[0]);
+                _a.X = (float)Convert.ToDouble(s[1]);
+                _a.Y = (float)Convert.ToDouble(s[2]);
+                _b.X = (float)Convert.ToDouble(s[3]);
+                _b.Y = (float)Convert.ToDouble(s[4]);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

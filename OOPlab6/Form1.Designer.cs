@@ -30,13 +30,17 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.selectShapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addShapeToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.circleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.segmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.polygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selectShapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteShapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.makeGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.separateGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveShapesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveShapesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadShapesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,15 +56,25 @@
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addShapeToolStripMenuItem1,
             this.selectShapeToolStripMenuItem,
+            this.addShapeToolStripMenuItem1,
             this.deleteShapeToolStripMenuItem,
-            this.makeGroupToolStripMenuItem});
+            this.makeGroupToolStripMenuItem,
+            this.separateGroupToolStripMenuItem,
+            this.saveShapesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1006, 28);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // selectShapeToolStripMenuItem
+            // 
+            this.selectShapeToolStripMenuItem.Name = "selectShapeToolStripMenuItem";
+            this.selectShapeToolStripMenuItem.Size = new System.Drawing.Size(67, 24);
+            this.selectShapeToolStripMenuItem.Text = "Pointer";
+            this.selectShapeToolStripMenuItem.ToolTipText = "Click on object to manipulate with it.";
+            this.selectShapeToolStripMenuItem.Click += new System.EventHandler(this.selectShapeToolStripMenuItem_Click);
             // 
             // addShapeToolStripMenuItem1
             // 
@@ -71,20 +85,20 @@
             this.addShapeToolStripMenuItem1.Name = "addShapeToolStripMenuItem1";
             this.addShapeToolStripMenuItem1.Size = new System.Drawing.Size(92, 24);
             this.addShapeToolStripMenuItem1.Text = "Add shape";
+            this.addShapeToolStripMenuItem1.ToolTipText = "Choose a shape from list.";
             // 
             // circleToolStripMenuItem
             // 
             this.circleToolStripMenuItem.Name = "circleToolStripMenuItem";
-            this.circleToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.circleToolStripMenuItem.Size = new System.Drawing.Size(143, 26);
             this.circleToolStripMenuItem.Text = "Circle";
-            this.circleToolStripMenuItem.ToolTipText = "Click on form to set a center of the circle.\r\nClick one more time to set a radius" +
-    ".";
+            this.circleToolStripMenuItem.ToolTipText = "Click on form to set a center of the circle.";
             this.circleToolStripMenuItem.Click += new System.EventHandler(this.circleToolStripMenuItem_Click);
             // 
             // segmentToolStripMenuItem
             // 
             this.segmentToolStripMenuItem.Name = "segmentToolStripMenuItem";
-            this.segmentToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.segmentToolStripMenuItem.Size = new System.Drawing.Size(143, 26);
             this.segmentToolStripMenuItem.Text = "Segment";
             this.segmentToolStripMenuItem.ToolTipText = "Click on form two times to set a segment.";
             this.segmentToolStripMenuItem.Click += new System.EventHandler(this.segmentToolStripMenuItem_Click);
@@ -92,19 +106,11 @@
             // polygonToolStripMenuItem
             // 
             this.polygonToolStripMenuItem.Name = "polygonToolStripMenuItem";
-            this.polygonToolStripMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.polygonToolStripMenuItem.Size = new System.Drawing.Size(143, 26);
             this.polygonToolStripMenuItem.Text = "Polygon";
             this.polygonToolStripMenuItem.ToolTipText = "Click on form as much as you need to set vertexes of a polygon. \r\nTo finish the p" +
     "olygon click on the first vertex.";
             this.polygonToolStripMenuItem.Click += new System.EventHandler(this.polygonToolStripMenuItem_Click);
-            // 
-            // selectShapeToolStripMenuItem
-            // 
-            this.selectShapeToolStripMenuItem.Name = "selectShapeToolStripMenuItem";
-            this.selectShapeToolStripMenuItem.Size = new System.Drawing.Size(67, 24);
-            this.selectShapeToolStripMenuItem.Text = "Pointer";
-            this.selectShapeToolStripMenuItem.ToolTipText = "Click on object to manipulate with it.";
-            this.selectShapeToolStripMenuItem.Click += new System.EventHandler(this.selectShapeToolStripMenuItem_Click);
             // 
             // deleteShapeToolStripMenuItem
             // 
@@ -119,7 +125,40 @@
             this.makeGroupToolStripMenuItem.Name = "makeGroupToolStripMenuItem";
             this.makeGroupToolStripMenuItem.Size = new System.Drawing.Size(101, 24);
             this.makeGroupToolStripMenuItem.Text = "Make group";
+            this.makeGroupToolStripMenuItem.ToolTipText = "Click here and click needed shapes to highlight them.\r\nClick here once again to f" +
+    "inish making group.";
             this.makeGroupToolStripMenuItem.Click += new System.EventHandler(this.makeGroupToolStripMenuItem_Click);
+            // 
+            // separateGroupToolStripMenuItem
+            // 
+            this.separateGroupToolStripMenuItem.Name = "separateGroupToolStripMenuItem";
+            this.separateGroupToolStripMenuItem.Size = new System.Drawing.Size(124, 24);
+            this.separateGroupToolStripMenuItem.Text = "Separate group";
+            this.separateGroupToolStripMenuItem.ToolTipText = "Choose a group and click here to ungroup it";
+            this.separateGroupToolStripMenuItem.Click += new System.EventHandler(this.separateGroupToolStripMenuItem_Click);
+            // 
+            // saveShapesToolStripMenuItem
+            // 
+            this.saveShapesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveShapesToolStripMenuItem1,
+            this.loadShapesToolStripMenuItem});
+            this.saveShapesToolStripMenuItem.Name = "saveShapesToolStripMenuItem";
+            this.saveShapesToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
+            this.saveShapesToolStripMenuItem.Text = "File";
+            // 
+            // saveShapesToolStripMenuItem1
+            // 
+            this.saveShapesToolStripMenuItem1.Name = "saveShapesToolStripMenuItem1";
+            this.saveShapesToolStripMenuItem1.Size = new System.Drawing.Size(166, 26);
+            this.saveShapesToolStripMenuItem1.Text = "Save shapes";
+            this.saveShapesToolStripMenuItem1.Click += new System.EventHandler(this.saveShapesToolStripMenuItem1_Click);
+            // 
+            // loadShapesToolStripMenuItem
+            // 
+            this.loadShapesToolStripMenuItem.Name = "loadShapesToolStripMenuItem";
+            this.loadShapesToolStripMenuItem.Size = new System.Drawing.Size(166, 26);
+            this.loadShapesToolStripMenuItem.Text = "Load shapes";
+            this.loadShapesToolStripMenuItem.Click += new System.EventHandler(this.loadShapesToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -156,6 +195,10 @@
         private System.Windows.Forms.ToolStripMenuItem polygonToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectShapeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem makeGroupToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem separateGroupToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveShapesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveShapesToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem loadShapesToolStripMenuItem;
     }
 }
 

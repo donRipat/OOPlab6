@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace OOPlab6
 {
@@ -29,27 +25,14 @@ namespace OOPlab6
         AShape s;
         const int res = 25;
         const int mov = 50;
-        const int w = 3;
+        const int w = 5;
         CCircle first = null;
         CCircle curver = null;
         List<PointF> v = new List<PointF>();
         DoublyLinkedList shapes = new DoublyLinkedList();
         int shapeIndex = 0;
-        int preclr = 0;
         CGroup gr = new CGroup();
-        //Dictionary<int, ACommand> commands = 
-        //new Dictionary<int, ACommand>
-        //{
-        //    {1, new CmdMove(1,mov) },
-        //    {2, new CmdMove(2,mov) },
-        //    {3, new CmdMove(3,mov) },
-        //    {4, new CmdMove(4,mov) },
-        //    {6, new CmdMove(6,mov) },
-        //    {7, new CmdMove(7,mov) },
-        //    {8, new CmdMove(8,mov) },
-        //    {9, new CmdMove(9,mov) },
-        //};
-        //Stack<ACommand> history = new Stack<ACommand>();
+        string shapesPath = @"Shapes.txt";
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -62,14 +45,9 @@ namespace OOPlab6
                     if (shapes.Current.Shape.Contains(p))
                     {
                         if (s != null)
-                        {
-                            s.Chng_clr(preclr);
                             s.Draw(g, w);
-                        }
                         s = shapes.Current.Shape;
-                        preclr = s.color;
-                        s.Chng_clr(4);
-                        s.Draw(g, w);
+                        s.Draw(g, w, 4);
                     }
 
                 //int delta = 1;
@@ -77,7 +55,7 @@ namespace OOPlab6
                 //    for (int y = 0; y < 800; y += delta)
                 //    {
                 //        PointF p = new PointF(x, y);
-                //        for (bool cond = !shapes.Is_empty(); cond;
+                //        for (bool cond = !shapes.Is_empty(); cond;5
                 //            cond = shapes.Step_forward())
                 //            if (shapes.Current.Shape.Contains(p))
                 //            {
@@ -90,13 +68,9 @@ namespace OOPlab6
             if (shapeIndex == 1)
             {
                 if (s != null)
-                {
-                    s.Chng_clr(0);
                     s.Draw(g, w);
-                }
                 s = new CCircle(e.X, e.Y, 100);
-                s.Chng_clr(4);
-                s.Draw(g, w);
+                s.Draw(g, w, 4);
                 shapes.Push_back(s);
             }
 
@@ -109,15 +83,11 @@ namespace OOPlab6
                 if (b != default(PointF))
                 {
                     if (s != null)
-                    {
-                        s.Chng_clr(0);
                         s.Draw(g, w);
-                    }
                     s = new CSegment(a, b);
                     a = default(PointF);
                     b = default(PointF);
-                    s.Chng_clr(4);
-                    s.Draw(g, w);
+                    s.Draw(g, w, 4);
                     shapes.Push_back(s);
                 }
             }
@@ -130,29 +100,28 @@ namespace OOPlab6
                 if (first == null)
                 {
                     first = new CCircle(cur, 5);
-                    first.Chng_clr(-1);
+                    first.Chng_clr(3);
                     first.Draw(g, w);
                 }
                 if (first.Contains(cur) && cur != first.Center)
                 {
                     if (s != null)
-                    {
-                        s.Chng_clr(0);
                         s.Draw(g, w);
-                    }
-                    v.Add(first.Center);
                     cur = default(PointF);
                     first = null;
                     s = new Polygon(v);
                     Draw_all_shapes();
-                    s.Chng_clr(4);
-                    s.Draw(g, w);
+                    s.Draw(g, w, 4);
                     shapes.Push_back(s);
                     v.Clear();
                 }
                 else
                     v.Add(cur);
             }
+
+            
+            // need to make saving and loading
+            
 
             if (shapeIndex == 4)
             {
@@ -163,22 +132,21 @@ namespace OOPlab6
                     if (shapes.Current.Shape.Contains(p))
                     {
                         gr.Add(shapes.Current.Shape);
+                        shapes.Current.Shape.Draw(g, w, 3);
                         if (shapes.Current.Shape != shapes.Head.Shape)
                         {
                             shapes.Delete_current();
                             cond = shapes.Step_forward();
                         }
                         else
+                        {
                             shapes.Delete_current();
+                            cond = !shapes.Is_empty();
+                        }
                     }
                     else
                         cond = shapes.Step_forward();
                 }
-            }
-            
-            if (shapeIndex == 5)
-            {
-                shapes.Push_back(gr);
             }
         }
 
@@ -189,13 +157,14 @@ namespace OOPlab6
             for (bool cond = !shapes.Is_empty(); cond; 
                 cond = shapes.Step_forward())
                 shapes.Current.Shape.Draw(g, w);
+            if (s != null)
+                s.Draw(g, w, 4);
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (s != null)
             {
-                g.Clear(Color.WhiteSmoke);
                 if (e.KeyCode == Keys.Add || 
                     e.KeyCode == Keys.Subtract)
                 {
@@ -213,15 +182,16 @@ namespace OOPlab6
                 else if (e.KeyCode == Keys.C)
                 {
                     s.Chng_clr(-1);
-                    preclr = s.color;
+                    s.Draw(g, w);
                 }
-                Draw_all_shapes();
+                if (e.KeyCode != Keys.C)
+                    Draw_all_shapes();
             }
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            label1.Text = "X = " + e.X.ToString() + " ; " + "Y = " +
+            label1.Text = "x = " + e.X.ToString() + "; " + "y = " +
                 e.Y.ToString();
         }
 
@@ -257,10 +227,9 @@ namespace OOPlab6
                 shapes.Search(s);
                 shapes.Delete_current();
                 if (shapes.Tail != null)
-                {
                     s = shapes.Tail.Shape;
-                    s.Chng_clr(4);
-                }
+                else
+                    s = null;
                 Draw_all_shapes();
             }
         }
@@ -269,9 +238,64 @@ namespace OOPlab6
             EventArgs e)
         {
             if (shapeIndex == 4)
-                shapeIndex = 5;
+            {
+                shapeIndex = 0;
+                shapes.Push_back(gr);
+                s = gr;
+                Draw_all_shapes();
+                gr = new CGroup();
+            }
             else
                 shapeIndex = 4;
+        }
+
+        private void separateGroupToolStripMenuItem_Click
+            (object sender, EventArgs e)
+        {
+            if (s == null)
+                return;
+            DoublyLinkedList ungr = s.Ungroup();
+            if (ungr == null)
+                return;
+            shapes.Search(s);
+            shapes.Delete_current();
+            ungr.Set_current_first();
+            for (bool cond = !ungr.Is_empty(); cond;
+                cond = ungr.Step_forward())
+                shapes.Push_back(ungr.Current.Shape);
+            s = shapes.Head.Shape;
+            Draw_all_shapes();
+            shapeIndex = 0;
+        }
+
+        private void saveShapesToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(shapesPath))
+                    shapes.SaveShapes(sw);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void loadShapesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader(shapesPath, false))
+                    shapes.LoadShapes(sr);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            if (shapes.Is_empty())
+                return;
+            s = shapes.Tail.Shape;
+            Draw_all_shapes();
         }
     }
 }
