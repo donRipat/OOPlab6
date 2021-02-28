@@ -19,20 +19,22 @@ namespace OOPlab6
         {
             g = CreateGraphics();
         }
-        
-        PointF a;
-        PointF b;
-        AShape s;
+
+        string shapesPath = @"Shapes.txt";
+        int shapeIndex = 0;
         const int res = 25;
         const int mov = 50;
         const int w = 5;
+
+        PointF a;
+        PointF b;
+        AShape s;
         CCircle first = null;
         CCircle curver = null;
         List<PointF> v = new List<PointF>();
-        DoublyLinkedList shapes = new DoublyLinkedList();
-        int shapeIndex = 0;
         CGroup gr = new CGroup();
-        string shapesPath = @"Shapes.txt";
+
+        DoublyLinkedList shapes = new DoublyLinkedList();
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -105,10 +107,6 @@ namespace OOPlab6
                 else
                     v.Add(cur);
             }
-
-            
-            // need to make saving and loading
-            
 
             if (shapeIndex == 4)
             {
@@ -262,6 +260,7 @@ namespace OOPlab6
             {
                 MessageBox.Show(ex.Message);
             }
+            shapeIndex = 0;
         }
 
         private void loadShapesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -279,6 +278,7 @@ namespace OOPlab6
                 return;
             s = shapes.Tail.Shape;
             Draw_all_shapes();
+            shapeIndex = 0;
         }
     }
 }

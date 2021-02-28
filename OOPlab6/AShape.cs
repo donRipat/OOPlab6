@@ -12,7 +12,7 @@ namespace OOPlab6
         protected static int h = 721;
         protected static int m = 24;
 
-        public void Draw(Graphics g, int width)
+        public virtual void Draw(Graphics g, int width)
         {
             Pen p;
             if (_color == 0)
@@ -31,7 +31,7 @@ namespace OOPlab6
             Draw_shape(g, p);
         }
 
-        public void Draw(Graphics g, int width, int color)
+        public virtual void Draw(Graphics g, int width, int color)
         {
             Pen p;
             if (color == 0)
@@ -52,7 +52,7 @@ namespace OOPlab6
 
         public abstract void Draw_shape(Graphics g, Pen p);
 
-        public void Chng_clr(int clr)
+        public virtual void Chng_clr(int clr)
         {
             if (clr < 0)
             {

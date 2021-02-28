@@ -7,6 +7,7 @@ namespace OOPlab6
     class CGroup : AShape
     {
         protected DoublyLinkedList shapes;
+        Pen p;
 
         public CGroup()
         {
@@ -93,6 +94,47 @@ namespace OOPlab6
             return true;
         }
 
+        public override void Draw(Graphics g, int width)
+        {
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond;
+                    cond = shapes.Step_forward())
+            {
+                if (shapes.Current.Shape.color == 0)
+                    p = new Pen(Color.Green);
+                else if (shapes.Current.Shape.color == 1)
+                    p = new Pen(Color.Purple);
+                else if (shapes.Current.Shape.color == 2)
+                    p = new Pen(Color.Blue);
+                else if (shapes.Current.Shape.color == 3)
+                    p = new Pen(Color.Orange);
+                else if (shapes.Current.Shape.color == 4)
+                    p = new Pen(Color.Red);
+                else
+                    p = new Pen(Color.Black);
+                p.Width = width;
+                shapes.Current.Shape.Draw_shape(g, p);
+            }
+        }
+
+        public override void Draw(Graphics g, int width, int color)
+        {
+            if (color == 0)
+                p = new Pen(Color.Green);
+            else if (color == 1)
+                p = new Pen(Color.Purple);
+            else if (color == 2)
+                p = new Pen(Color.Blue);
+            else if (color == 3)
+                p = new Pen(Color.Orange);
+            else if (color == 4)
+                p = new Pen(Color.Red);
+            else
+                p = new Pen(Color.Black);
+            p.Width = width;
+            Draw_shape(g, p);
+        }
+
         public override void Draw_shape(Graphics g, Pen p)
         {
             shapes.Set_current_first();
@@ -100,7 +142,15 @@ namespace OOPlab6
                     cond = shapes.Step_forward())
                 shapes.Current.Shape.Draw_shape(g, p);
         }
-        
+
+        public override void Chng_clr(int clr)
+        {
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond;
+                    cond = shapes.Step_forward())
+                shapes.Current.Shape.Chng_clr(clr);
+        }
+
         public override DoublyLinkedList Ungroup()
         {
             return shapes;
