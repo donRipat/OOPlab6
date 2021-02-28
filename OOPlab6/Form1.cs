@@ -48,21 +48,8 @@ namespace OOPlab6
                             s.Draw(g, w);
                         s = shapes.Current.Shape;
                         s.Draw(g, w, 4);
+                        return;
                     }
-
-                //int delta = 1;
-                //for (int x = 0; x < 1100; x += delta)
-                //    for (int y = 0; y < 800; y += delta)
-                //    {
-                //        PointF p = new PointF(x, y);
-                //        for (bool cond = !shapes.Is_empty(); cond;5
-                //            cond = shapes.Step_forward())
-                //            if (shapes.Current.Shape.Contains(p))
-                //            {
-                //                CCircle omg = new CCircle(p, 1);
-                //                omg.Draw(g);
-                //            }
-                //    }
             }
 
             if (shapeIndex == 1)
@@ -163,30 +150,41 @@ namespace OOPlab6
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (s != null)
+            if (s == null)
+                return;
+            if (e.KeyCode == Keys.Add ||
+                e.KeyCode == Keys.Subtract)
             {
-                if (e.KeyCode == Keys.Add || 
-                    e.KeyCode == Keys.Subtract)
-                {
-                    int sz;
-                    if (e.KeyCode == Keys.Add)
-                        sz = res;
-                    else sz = -res;
-                    s.Resize(sz);
-                }
-                else if (e.KeyCode >= Keys.NumPad1 && 
-                    e.KeyCode <= Keys.NumPad9)
-                {
-                    s.Move(e.KeyCode - Keys.NumPad0, mov);
-                }
-                else if (e.KeyCode == Keys.C)
-                {
-                    s.Chng_clr(-1);
-                    s.Draw(g, w);
-                }
-                if (e.KeyCode != Keys.C)
-                    Draw_all_shapes();
+                int sz;
+                if (e.KeyCode == Keys.Add)
+                    sz = res;
+                else sz = -res;
+                s.Resize(sz);
             }
+            else if (e.KeyCode >= Keys.NumPad1 &&
+                e.KeyCode <= Keys.NumPad9)
+            {
+                s.Move(e.KeyCode - Keys.NumPad0, mov);
+            }
+            else if (e.KeyCode == Keys.C)
+            {
+                s.Chng_clr(-1);
+                s.Draw(g, w);
+            }
+            else if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.D)
+            {
+                if (shapes.Count == 0)
+                    return;
+                shapes.Search(s);
+                shapes.Delete_current();
+                if (shapes.Tail != null)
+                    s = shapes.Tail.Shape;
+                else
+                    s = null;
+                Draw_all_shapes();
+            }
+            if (e.KeyCode != Keys.C)
+                Draw_all_shapes();
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
@@ -218,22 +216,7 @@ namespace OOPlab6
         {
             shapeIndex = 0;
         }
-
-        private void deleteShapeToolStripMenuItem_Click(object sender, 
-            EventArgs e)
-        {
-            if (shapes.Count > 0)
-            {
-                shapes.Search(s);
-                shapes.Delete_current();
-                if (shapes.Tail != null)
-                    s = shapes.Tail.Shape;
-                else
-                    s = null;
-                Draw_all_shapes();
-            }
-        }
-
+        
         private void makeGroupToolStripMenuItem_Click(object sender, 
             EventArgs e)
         {

@@ -171,6 +171,16 @@ namespace OOPlab6
                 _a.Y = (float)Convert.ToDouble(s[2]);
                 _b.X = (float)Convert.ToDouble(s[3]);
                 _b.Y = (float)Convert.ToDouble(s[4]);
+                double dx = _a.X - _b.X;
+                double dy = _a.Y - _b.Y;
+                try
+                {
+                    _angle = Math.Atan((dy + .0) / dx);
+                }
+                catch (DivideByZeroException)
+                {
+                    _angle = Math.Asin(1);
+                }
                 return true;
             }
             catch (Exception)

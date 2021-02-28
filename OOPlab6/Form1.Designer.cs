@@ -35,7 +35,6 @@
             this.circleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.segmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.polygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteShapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.makeGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.separateGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveShapesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,7 +57,6 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.selectShapeToolStripMenuItem,
             this.addShapeToolStripMenuItem1,
-            this.deleteShapeToolStripMenuItem,
             this.makeGroupToolStripMenuItem,
             this.separateGroupToolStripMenuItem,
             this.saveShapesToolStripMenuItem});
@@ -111,14 +109,6 @@
             this.polygonToolStripMenuItem.ToolTipText = "Click on form as much as you need to set vertexes of a polygon. \r\nTo finish the p" +
     "olygon click on the first vertex.";
             this.polygonToolStripMenuItem.Click += new System.EventHandler(this.polygonToolStripMenuItem_Click);
-            // 
-            // deleteShapeToolStripMenuItem
-            // 
-            this.deleteShapeToolStripMenuItem.Name = "deleteShapeToolStripMenuItem";
-            this.deleteShapeToolStripMenuItem.Size = new System.Drawing.Size(108, 24);
-            this.deleteShapeToolStripMenuItem.Text = "Delete shape";
-            this.deleteShapeToolStripMenuItem.ToolTipText = "Highlighted object will be deleted by clicking this.";
-            this.deleteShapeToolStripMenuItem.Click += new System.EventHandler(this.deleteShapeToolStripMenuItem_Click);
             // 
             // makeGroupToolStripMenuItem
             // 
@@ -191,7 +181,6 @@
         private System.Windows.Forms.ToolStripMenuItem addShapeToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem segmentToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem circleToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteShapeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem polygonToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectShapeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem makeGroupToolStripMenuItem;
