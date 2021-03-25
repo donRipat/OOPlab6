@@ -9,6 +9,7 @@ namespace OOPlab6
         private DoublyNode head;
         private DoublyNode current;
         private DoublyNode tail;
+        protected TreeViewer observers;
 
         public ShapeList()
         {
@@ -31,6 +32,7 @@ namespace OOPlab6
                         return true;
                 current = t;
             }
+            Notify();
             return false;
         }
 
@@ -53,6 +55,7 @@ namespace OOPlab6
             }
             current = tail;
             ++count;
+            Notify();
             return true;
         }
 
@@ -75,6 +78,7 @@ namespace OOPlab6
             }
             current = head;
             ++count;
+            Notify();
             return true;
         }
 
@@ -97,6 +101,7 @@ namespace OOPlab6
                 current = null;
             }
             --count;
+            Notify();
             return true;
         }
 
@@ -122,6 +127,7 @@ namespace OOPlab6
                     current = null;
                     Delete_last();
                 }
+                Notify();
                 return true;
             }
             return false;
@@ -146,7 +152,17 @@ namespace OOPlab6
                 current = null;
             }
             --count;
+            Notify();
             return true;
+        }
+
+        public void Clear()
+        {
+            count = 0;
+            head = null;
+            tail = null;
+            current = null;
+            Notify();
         }
 
         //  Move current to the next shape
@@ -184,15 +200,7 @@ namespace OOPlab6
             current = tail;
             return true;
         }
-
-        //  no need to describe
-        public AShape Get_current_shape()
-        {
-            if (current == null)
-                return null;
-            return current.Shape;
-        }
-
+        
         //  Check if list is empty
         public bool Is_empty()
         {
@@ -205,7 +213,16 @@ namespace OOPlab6
         public DoublyNode Head { get => head; }
         public DoublyNode Tail { get => tail; }
         public int Count { get => count; }
-
+        public AShape CurShape
+        {
+            get
+            {
+                if (current != null)
+                    return current.Shape;
+                return null;
+            }
+        }
+        
         public virtual AShape CreateShape(string code)
         {
             return null;
@@ -250,5 +267,10 @@ namespace OOPlab6
                 return false;
             }
         }
+
+        protected virtual void Notify()
+        {
+            ;
+        } 
     }
 }

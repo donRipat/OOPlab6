@@ -19,26 +19,17 @@ namespace OOPlab6
             min = new PointF();
             max = new PointF();
             diagonal = new CSegment(min, max);
+            center = new PointF();
         }
         public Polygon(List<PointF> v)
         {
             foreach (PointF i in v)
                 vert.Add(i);
-
-            min = vert.First();
-            max = vert.First();
-            foreach (PointF i in vert)
-            {
-                if (i.X < min.X)
-                    min.X = i.X;
-                if (i.Y < min.Y)
-                    min.Y = i.Y;
-                if (i.X > max.X)
-                    max.X = i.X;
-                if (i.Y > max.Y)
-                    max.Y = i.Y;
-            }
-            diagonal = new CSegment(min, max);
+            UpdateDiagonal();
+            center = new PointF((min.X + max.X) / 2,
+                    (min.Y + max.Y) / 2);
+            r = Math.Sqrt((min.X - max.X) * (min.X - max.X) +
+                    (min.Y - max.Y) * (min.Y - max.Y)) / 2;
         }
         public Polygon(Polygon pol)
         {
@@ -47,13 +38,16 @@ namespace OOPlab6
             max = pol.max;
             diagonal = pol.diagonal;
             _color = pol.color;
+            center = pol.center;
+            r = pol.r;
+        }
+        public Polygon(List<PointF> v, int c) : this(v)
+        {
+            _color = c;
         }
 
         public override bool Move_all_points(double dx, double dy)
         {
-            List<PointF> oldPoints = new List<PointF>();
-            foreach (PointF i in vert)
-                oldPoints.Add(new PointF(i.X, i.Y));
             for (int i = 0; i < vert.Count; ++i)
             {
                 PointF t = vert.First();
@@ -62,23 +56,14 @@ namespace OOPlab6
                 t.Y += (float)dy;
                 vert.Add(t);
             }
-            min = new PointF((float)(min.X + dx),
-                (float)(min.Y + dy));
-            max = new PointF((float)(max.X + dx),
-                (float)(max.Y + dy));
-            diagonal = new CSegment(min, max);
+            UpdateDiagonal();
             if (!Fits())
             {
-                vert.Clear();
-                foreach (PointF i in oldPoints)
-                    vert.Add(i);
-                min = new PointF((float)(min.X - dx),
-                    (float)(min.Y - dy));
-                max = new PointF((float)(max.X - dx),
-                    (float)(max.Y - dy));
-                diagonal = new CSegment(min, max);
+                Move_all_points(-dx, -dy);
+                UpdateDiagonal();
                 return false;
             }
+            UpdateDiagonal();
             return true;
         }
 
@@ -116,20 +101,17 @@ namespace OOPlab6
                     max = min;
                     min = t;
                 }
-                PointF m = new PointF((min.X + max.X) / 2,
-                    (min.Y + max.Y) / 2);
+                PointF m = center;
+                UpdateDiagonal();
                 double sx = sz * Math.Cos(diagonal.Angle);
-                double dlen = Math.Sqrt((min.X - max.X) *
-                    (min.X - max.X) + (min.Y - max.Y) *
-                    (min.Y - max.Y));
-                if (dlen < 50)
+                if (r < 25)
                 {
                     diagonal.Resize(-sz);
                     min = diagonal.A;
                     max = diagonal.B;
                     return false;
                 }
-                double dx = Math.Cos(diagonal.Angle) * dlen / 2;
+                double dx = Math.Cos(diagonal.Angle) * r;
                 double ds = 1 + sx / dx;
                 for (int i = 0; i < vert.Count; ++i)
                 {
@@ -142,6 +124,7 @@ namespace OOPlab6
                 UpdateDiagonal();
                 return true;
             }
+            UpdateDiagonal();
             return false;
         }
 
@@ -178,6 +161,10 @@ namespace OOPlab6
                     max.Y = t.Y;
             }
             diagonal = new CSegment(min, max);
+            center = new PointF((min.X + max.X) / 2,
+                    (min.Y + max.Y) / 2);
+            r = Math.Sqrt((min.X - max.X) * (min.X - max.X) +
+                   (min.Y - max.Y) * (min.Y - max.Y)) / 2;
         }
 
         public override DoublyLinkedList Ungroup()
@@ -187,7 +174,7 @@ namespace OOPlab6
 
         public override AShape Clone()
         {
-            return new Polygon(this);
+            return new Polygon(vert, _color);
         }
 
         public override bool Save(StreamWriter sw)
@@ -222,6 +209,10 @@ namespace OOPlab6
                     vert.Add(new PointF(x, y));
                 }
                 UpdateDiagonal();
+                center = new PointF((min.X + max.X) / 2,
+                    (min.Y + max.Y) / 2);
+                r = Math.Sqrt((min.X - max.X) * (min.X - max.X) +
+                    (min.Y - max.Y) * (min.Y - max.Y)) / 2;
                 return true;
             }
             catch (Exception)

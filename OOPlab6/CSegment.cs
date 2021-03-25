@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Drawing;
 using System.IO;
 
@@ -15,6 +14,7 @@ namespace OOPlab6
             _a = new PointF();
             _b = new PointF();
             _angle = 0;
+            center = new PointF();
         }
         public CSegment(PointF a, PointF b)
         {
@@ -30,6 +30,10 @@ namespace OOPlab6
             {
                 _angle = Math.Asin(1);
             }
+            center = new PointF((_a.X + _b.X) / 2,
+                (_a.Y + _b.Y) / 2);
+            r = Math.Sqrt((_a.X - _b.X) * (_a.X - _b.X) +
+                    (_a.Y - _b.Y) * (_a.Y - _b.Y)) / 2;
         }
         public CSegment(CSegment seg)
         {
@@ -37,6 +41,8 @@ namespace OOPlab6
             _b = seg._b;
             _angle = seg._angle;
             _color = seg.color;
+            center = seg.center;
+            r = seg.r;
         }
         public CSegment(PointF a, PointF b, int c) : this(a, b)
         {
@@ -45,21 +51,20 @@ namespace OOPlab6
 
         public override bool Resize(int size)
         {
-            double l = Math.Sqrt((_a.X - _b.X) * (_a.X - _b.X) +
-                    (_a.Y - _b.Y) * (_a.Y - _b.Y));
-            if (l + 2 * size <= 5)
+            if (r + 2 * size <= 5)
                 return false;
-            double r = l / 2 + size;
-            double dx = r * Math.Cos(_angle);
-            double dy = r * Math.Sin(_angle);
+            double d = r + size;
+            double dx = d * Math.Cos(_angle);
+            double dy = d * Math.Sin(_angle);
             PointF a = A;
             PointF b = B;
-            PointF _m = new PointF((_a.X + _b.X) / 2, 
-                (_a.Y + _b.Y) / 2);
+            PointF _m = center;
+            r += size;
             _a = new PointF((float)(_m.X - dx), (float)(_m.Y - dy));
             _b = new PointF((float)(_m.X + dx), (float)(_m.Y + dy));
             if (!Fits())
             {
+                r -= size;
                 _a = a;
                 _b = b;
                 return false;
@@ -71,12 +76,16 @@ namespace OOPlab6
         {
             _a = new PointF((float)(_a.X + dx), (float)(_a.Y + dy));
             _b = new PointF((float)(_b.X + dx), (float)(_b.Y + dy));
+            center = new PointF((float)(center.X + dx), 
+                (float)(center.Y + dy));
             if (!Fits())
             {
                 _a = new PointF((float)(_a.X - dx), 
                     (float)(_a.Y - dy));
                 _b = new PointF((float)(_b.X - dx), 
                     (float)(_b.Y - dy));
+                center = new PointF((float)(center.X - dx),
+                (float)(center.Y - dy));
                 return false;
             }
             return true;
@@ -181,11 +190,37 @@ namespace OOPlab6
                 {
                     _angle = Math.Asin(1);
                 }
+                center = new PointF((_a.X + _b.X) / 2,
+                    (_a.Y + _b.Y) / 2);
+                r = Math.Sqrt((_a.X - _b.X) * (_a.X - _b.X) +
+                    (_a.Y - _b.Y) * (_a.Y - _b.Y)) / 2;
                 return true;
             }
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+        public override PointF Max
+        {
+            get
+            {
+                PointF max = new PointF();
+                max.X = Math.Max(A.X, B.X);
+                max.Y = Math.Max(A.Y, B.Y);
+                return max;
+            }
+        }
+
+        public override PointF Min
+        {
+            get
+            {
+                PointF min = new PointF();
+                min.X = Math.Min(A.X, B.X);
+                min.Y = Math.Min(A.Y, B.Y);
+                return min;
             }
         }
     }

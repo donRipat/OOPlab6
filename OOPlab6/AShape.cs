@@ -4,13 +4,53 @@ using System.IO;
 
 namespace OOPlab6
 {
-    abstract class AShape
+    abstract class Sticky
+    {
+        public bool sticky = false;
+        protected DoublyLinkedList obs = null;
+        protected PointF min, max;
+
+        protected PointF center;
+        protected double r;
+
+        public PointF Center { get => center; }
+
+        public void Switch()
+        {
+            if (sticky)
+                sticky = false;
+            else sticky = true;
+        }
+        
+        public void ChangeObservers(DoublyLinkedList L)
+        {
+            obs = L;
+        }
+
+        public void AddObserver(AShape s)
+        {
+            obs.Push_back(s);
+        }
+
+        public virtual PointF Min { get => min; }
+        public virtual PointF Max { get => max; }
+    }
+
+    abstract class AShape : Sticky
     {
         protected int _color;
 
         protected static int w = 1006;
         protected static int h = 721;
         protected static int m = 24;
+
+        protected bool cur = false;
+
+        public bool isCur
+        {
+            get => cur;
+            set { cur = value; }
+        }
 
         public virtual void Draw(Graphics g, int width)
         {
@@ -69,40 +109,84 @@ namespace OOPlab6
 
         public bool Move(int destination, int distance)
         {
+            bool ans = false;
+            double dx = 0, dy = 0;
             double d = distance / Math.Sqrt(2);
             if (destination == 1)
             {
-                return Move_all_points(-d, d);
+                dx = -d; dy = d;
             }
             if (destination == 2)
             {
-                return Move_all_points(0, distance);
+                dx = 0; dy = distance;
             }
             if (destination == 3)
             {
-                return Move_all_points(d, d);
+                dx = d; dy = d;
             }
             if (destination == 4)
             {
-                return Move_all_points(-distance, 0);
+                dx = -distance; dy = 0;
             }
             if (destination == 6)
             {
-                return Move_all_points(distance, 0);
+                dx = distance; dy = 0;
             }
             if (destination == 7)
             {
-                return Move_all_points(-d, -d);
+                dx = -d; dy = -d;
             }
             if (destination == 8)
             {
-                return Move_all_points(0, -distance);
+                dx = 0; dy = -distance;
             }
             if (destination == 9)
             {
-                return Move_all_points(d, -d);
+                dx = d; dy = -d;
             }
-            return false;
+            ans = Move_all_points(dx, dy);
+            if (sticky && ans)
+                Notify(dx, dy);
+            return ans;
+        }
+
+        protected bool Notify(double dx, double dy)
+        {
+            if (obs == null) return false;
+            obs.Set_current_first();
+            for (bool cond = !obs.Is_empty(); cond;
+                cond = obs.Step_forward())
+                obs.CurShape.SubjChanged(dx, dy);
+            obs.Set_current_first();
+            for (bool cond = !obs.Is_empty(); cond;)
+            {
+                if (this.CloseTo(obs.CurShape))
+                    cond = obs.Step_forward();
+                else if (obs.Current == obs.Head)
+                {
+                    obs.Delete_current();
+                    cond = !obs.Is_empty();
+                }
+                else
+                {
+                    obs.Delete_current();
+                    cond = obs.Step_forward();
+                }
+            }
+            return true;
+        }
+
+        public virtual bool SubjChanged(double dx, double dy)
+        {
+            return Move_all_points(dx, dy);
+        }
+
+        public virtual bool CloseTo(AShape s)
+        {
+            double d = Math.Sqrt((center.X - s.Center.X) *
+                (center.X - s.Center.X) + (center.Y - s.Center.Y) *
+                (center.Y - s.Center.Y));
+            return (d <= r + s.r);
         }
 
         public abstract bool Move_all_points(double dx, double dy);

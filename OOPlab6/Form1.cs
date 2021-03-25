@@ -18,13 +18,18 @@ namespace OOPlab6
         private void Form1_Load(object sender, EventArgs e)
         {
             g = CreateGraphics();
+            tree = new TreeViewer(treeView1);
+            shapes.AddObservers(tree);
+            tree.AddObs(shapes);
+            treeView1.Nodes.Add(new TreeNode("DoublyLinkedList"));
         }
 
         string shapesPath = @"Shapes.txt";
         int shapeIndex = 0;
         const int res = 25;
-        const int mov = 50;
+        const int mov = 20;
         const int w = 5;
+        bool treeClicked = false;
 
         PointF a;
         PointF b;
@@ -35,9 +40,12 @@ namespace OOPlab6
         CGroup gr = new CGroup();
 
         DoublyLinkedList shapes = new DoublyLinkedList();
+        TreeViewer tree;
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
+            treeClicked = false;
+
             if (shapeIndex == 0)
             {
                 PointF p = new PointF(e.X, e.Y);
@@ -50,6 +58,7 @@ namespace OOPlab6
                             s.Draw(g, w);
                         s = shapes.Current.Shape;
                         s.Draw(g, w, 4);
+                        UpdateTB();
                         return;
                     }
             }
@@ -133,6 +142,7 @@ namespace OOPlab6
                         cond = shapes.Step_forward();
                 }
             }
+            UpdateTB();
         }
 
         private void Draw_all_shapes()
@@ -158,11 +168,15 @@ namespace OOPlab6
                     sz = res;
                 else sz = -res;
                 s.Resize(sz);
+                if (s.sticky)
+                    shapes.UpdateStickyShapes(s);
             }
             else if (e.KeyCode >= Keys.NumPad1 &&
                 e.KeyCode <= Keys.NumPad9)
             {
                 s.Move(e.KeyCode - Keys.NumPad0, mov);
+                if (s.sticky)
+                    shapes.UpdateStickyShapes(s);
             }
             else if (e.KeyCode == Keys.C)
             {
@@ -179,10 +193,30 @@ namespace OOPlab6
                     s = shapes.Tail.Shape;
                 else
                     s = null;
-                Draw_all_shapes();
             }
-            if (e.KeyCode != Keys.C)
+            else if (e.KeyCode == Keys.S)
+            {
+                s.Switch();
+            }
+            if (e.KeyCode != Keys.C || e.KeyCode != Keys.S)
                 Draw_all_shapes();
+            UpdateTB();
+            e.Handled = true;
+        }
+
+        private void UpdateTB()
+        {
+            if (s == null)
+                return;
+            if (s.sticky)
+                textBox1.Text = "Sticky";
+            else textBox1.Text = "Not sticky";
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            Form1_KeyDown(this, e);
+            return;
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
@@ -209,7 +243,7 @@ namespace OOPlab6
             shapeIndex = 3;
         }
 
-        private void selectShapeToolStripMenuItem_Click(object sender, 
+        private void selectShapeToolStripMenuItem_Click(object sender,
             EventArgs e)
         {
             shapeIndex = 0;
@@ -249,7 +283,8 @@ namespace OOPlab6
             shapeIndex = 0;
         }
 
-        private void saveShapesToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void saveShapesToolStripMenuItem1_Click(object sender,
+            EventArgs e)
         {
             try
             {
@@ -263,11 +298,13 @@ namespace OOPlab6
             shapeIndex = 0;
         }
 
-        private void loadShapesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void loadShapesToolStripMenuItem_Click(object sender,
+            EventArgs e)
         {
             try
             {
-                using (StreamReader sr = new StreamReader(shapesPath, false))
+                using (StreamReader sr = new StreamReader(shapesPath,
+                    false))
                     shapes.LoadShapes(sr);
             }
             catch (Exception ex)
@@ -279,6 +316,29 @@ namespace OOPlab6
             s = shapes.Tail.Shape;
             Draw_all_shapes();
             shapeIndex = 0;
+        }
+
+        private void treeView1_AfterSelect(object sender, 
+            TreeViewEventArgs e)
+        {
+            if (treeClicked)
+            {
+                treeView1.SelectedNode = e.Node;
+                tree.SelectedChanged();
+                Draw_all_shapes();
+            }
+            treeClicked = false;
+        }
+
+        private void treeView1_MouseClick(object sender, 
+            MouseEventArgs e)
+        {
+            treeClicked = true;
+        }
+
+        private void treeView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

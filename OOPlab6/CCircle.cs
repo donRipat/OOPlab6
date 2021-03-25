@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Drawing;
 using System.IO;
 
@@ -7,9 +6,6 @@ namespace OOPlab6
 {
     class CCircle : AShape
     {
-        private PointF center;
-        private int r;
-
         public CCircle()
         {
             center = new PointF();
@@ -39,10 +35,9 @@ namespace OOPlab6
             _color = c;
         }
 
-        public int R { get => r; }
+        public int R { get => (int)Math.Round(r); }
         public double X { get => center.X; }
         public double Y { get => center.Y; }
-        public PointF Center { get => center; }
         
         public override void Draw_shape(Graphics g, Pen p)
         {
@@ -128,6 +123,18 @@ namespace OOPlab6
             {
                 return false;
             }
+        }
+
+        public override PointF Max
+        {
+            get => new PointF((float)(center.X + r),
+            (float)(center.Y + r));
+        }
+
+        public override PointF Min
+        {
+            get => new PointF((float)(center.X - r),
+            (float)(center.Y - r));
         }
     }
 }

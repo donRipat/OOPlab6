@@ -7,25 +7,27 @@ namespace OOPlab6
     class CGroup : AShape
     {
         protected DoublyLinkedList shapes;
-        Pen p;
 
         public CGroup()
         {
             shapes = new DoublyLinkedList();
         }
-
         public CGroup(CGroup gr)
         {
             shapes = new DoublyLinkedList();
             gr.shapes.Set_current_first();
             for (bool cond = !gr.shapes.Is_empty(); cond;
                 cond = gr.shapes.Step_forward())
-                shapes.Push_back(gr.shapes.Current.Shape.Clone());
+                shapes.Push_back(gr.shapes.CurShape.Clone());
+            UpdateMinMax();
         }
+
+        public DoublyLinkedList Shapes { get => shapes; }
 
         public void Add(AShape s)
         {
             shapes.Push_back(s);
+            UpdateMinMax();
         }
 
         public int Count { get => shapes.Count; }
@@ -35,7 +37,7 @@ namespace OOPlab6
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
-                if (shapes.Current.Shape.Contains(p))
+                if (shapes.CurShape.Contains(p))
                     return true;
             return false;
         }
@@ -46,19 +48,20 @@ namespace OOPlab6
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
-                oldShapes.Push_back(shapes.Current.Shape.Clone());
+                oldShapes.Push_back(shapes.CurShape.Clone());
 
             bool res = true;
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
-                if (!shapes.Current.Shape.Resize(sz))
+                if (!shapes.CurShape.Resize(sz))
                 {
                     res = false;
                     break;
                 }
             if (!res)
                 shapes = oldShapes;
+            UpdateMinMax();
             return res;
         }
 
@@ -68,19 +71,20 @@ namespace OOPlab6
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
-                oldShapes.Push_back(shapes.Current.Shape.Clone());
+                oldShapes.Push_back(shapes.CurShape.Clone());
 
             bool res = true;
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
-                if (!shapes.Current.Shape.Move_all_points(dx, dy))
+                if (!shapes.CurShape.Move_all_points(dx, dy))
                 {
                     res = false;
                     break;
                 }
             if (!res)
                 shapes = oldShapes;
+            UpdateMinMax();
             return res;
         }
 
@@ -89,7 +93,7 @@ namespace OOPlab6
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
-                if (!shapes.Current.Shape.Fits())
+                if (!shapes.CurShape.Fits())
                     return false;
             return true;
         }
@@ -99,48 +103,19 @@ namespace OOPlab6
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
-            {
-                if (shapes.Current.Shape.color == 0)
-                    p = new Pen(Color.Green);
-                else if (shapes.Current.Shape.color == 1)
-                    p = new Pen(Color.Purple);
-                else if (shapes.Current.Shape.color == 2)
-                    p = new Pen(Color.Blue);
-                else if (shapes.Current.Shape.color == 3)
-                    p = new Pen(Color.Orange);
-                else if (shapes.Current.Shape.color == 4)
-                    p = new Pen(Color.Red);
-                else
-                    p = new Pen(Color.Black);
-                p.Width = width;
-                shapes.Current.Shape.Draw_shape(g, p);
-            }
+                shapes.CurShape.Draw(g, width);
         }
 
         public override void Draw(Graphics g, int width, int color)
         {
-            if (color == 0)
-                p = new Pen(Color.Green);
-            else if (color == 1)
-                p = new Pen(Color.Purple);
-            else if (color == 2)
-                p = new Pen(Color.Blue);
-            else if (color == 3)
-                p = new Pen(Color.Orange);
-            else if (color == 4)
-                p = new Pen(Color.Red);
-            else
-                p = new Pen(Color.Black);
-            p.Width = width;
-            Draw_shape(g, p);
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond;
+                    cond = shapes.Step_forward())
+                shapes.CurShape.Draw(g, width, color);
         }
 
         public override void Draw_shape(Graphics g, Pen p)
         {
-            shapes.Set_current_first();
-            for (bool cond = !shapes.Is_empty(); cond;
-                    cond = shapes.Step_forward())
-                shapes.Current.Shape.Draw_shape(g, p);
         }
 
         public override void Chng_clr(int clr)
@@ -148,7 +123,7 @@ namespace OOPlab6
             shapes.Set_current_first();
             for (bool cond = !shapes.Is_empty(); cond;
                     cond = shapes.Step_forward())
-                shapes.Current.Shape.Chng_clr(clr);
+                shapes.CurShape.Chng_clr(clr);
         }
 
         public override DoublyLinkedList Ungroup()
@@ -182,12 +157,64 @@ namespace OOPlab6
             {
                 if (!shapes.LoadShapes(sr))
                     return false;
+                UpdateMinMax();
                 return true;
             }
             catch (Exception)
             {
                 return false;
             }
+        }
+
+        public override bool CloseTo(AShape s)
+        {
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond;
+                cond = shapes.Step_forward())
+                if (s.CloseTo(shapes.CurShape))
+                    return true;
+            return false;
+        }
+
+        public override bool SubjChanged(double dx, double dy)
+        {
+            DoublyLinkedList oldShapes = new DoublyLinkedList();
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond;
+                    cond = shapes.Step_forward())
+                oldShapes.Push_back(shapes.CurShape.Clone());
+
+            bool res = true;
+
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond;
+                cond = shapes.Step_forward())
+                if (!shapes.CurShape.SubjChanged(dx, dy))
+                {
+                    res = false;
+                    break;
+                }
+            if (!res)
+                shapes = oldShapes;
+            UpdateMinMax();
+            return res;
+        }
+
+        public void UpdateMinMax()
+        {
+            shapes.Set_current_first();
+            for (bool cond = !shapes.Is_empty(); cond;
+                cond = shapes.Step_forward())
+            {
+                min.X = Math.Min(shapes.CurShape.Min.X, min.X);
+                min.Y = Math.Min(shapes.CurShape.Min.Y, min.Y);
+                max.X = Math.Max(shapes.CurShape.Max.X, max.X);
+                max.Y = Math.Max(shapes.CurShape.Max.Y, max.Y);
+            }
+            center = new PointF((min.X + max.X) / 2,
+                (min.Y + max.Y) / 2);
+            r = Math.Sqrt((min.X - max.X) * (min.X - max.X) +
+                    (min.Y - max.Y) * (min.Y - max.Y)) / 2;
         }
     }
 }
